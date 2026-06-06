@@ -1,0 +1,85 @@
+.react-calendar {
+  width: 100% !important;
+  max-width: 100% !important;
+  border: none !important;
+  background: white;
+}
+
+/* 曜日ヘッダーエリア */
+.react-calendar__month-view__weekdays {
+  display: flex !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 曜日ひとつひとつを強制的に7等分 */
+.react-calendar__month-view__weekdays__weekday {
+  flex: 1 0 0% !important; 
+  padding: 10px 0 !important;
+  max-width: none !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* 曜日の下線を消す */
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* 土日の色 */
+.react-calendar__month-view__weekdays__weekday:nth-child(6) { color: #007bff; }
+.react-calendar__month-view__weekdays__weekday:nth-child(7) { color: #ff4444; }
+
+/* 日付タイル */
+.react-calendar__tile {
+  height: 68px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start !important;
+  padding-top: 6px !important;
+}
+
+.tile-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  margin-top: 2px;
+}
+
+.tile-income {
+  font-size: 8px;
+  color: #00c7b7;
+  line-height: 1;
+}
+
+.tile-expense {
+  font-size: 8px;
+  color: #ff758c;
+  line-height: 1;
+}
+
+/* 今日の日付 */
+.react-calendar__tile--now {
+  background: #fff0f5 !important;
+  color: #ff758c !important;
+  border-radius: 8px;
+}
+
+/* 選択中 */
+.react-calendar__tile--active {
+  background: #ff758c !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+/* デフォルトのナビ（年月）を非表示 */
+.react-calendar__navigation {
+  display: none !important;
+}

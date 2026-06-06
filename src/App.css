@@ -1,0 +1,45 @@
+/* アプリ全体の土台 (#root) */
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 画面全体のスクロール（バウンス）を完全に封印 */
+  text-align: left; /* Viteデフォルトのcenterを上書き */
+}
+
+/* ブラウザの基本設定のリセット */
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed; /* iOSでの引っ張り更新やバウンスを強力に防止 */
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  background-color: #fff;
+}
+
+/* --- iPhone ズーム防止 & 入力欄の共通スタイル --- */
+input, 
+select, 
+textarea {
+  font-size: 16px !important; /* これにより個別のjsxでの指定が不要になります */
+  font-family: inherit;
+  box-sizing: border-box; /* パディングを含めたサイズ計算にする */
+}
+
+/* ボタンの基本スタイル（共通化しておくと後で楽です） */
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* タップ時の青い枠を消す（アプリ感を出す） */
+}
+
+/* リンクなどの装飾リセット */
+a {
+  text-decoration: none;
+  color: inherit;
+}
