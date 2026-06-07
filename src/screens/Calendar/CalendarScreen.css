@@ -65,15 +65,34 @@
   line-height: 1;
 }
 
+/* 平日・土曜・日曜の文字色 */
+.react-calendar__tile.tile-weekday {
+  color: #333;
+}
+
+.react-calendar__tile.tile-saturday {
+  color: #007bff;
+}
+
+.react-calendar__tile.tile-sunday {
+  color: #ff4444;
+}
+
+/* 当月以外の日付は非表示 */
+.react-calendar__month-view__days__day--neighboringMonth {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* 今日の日付 */
-.react-calendar__tile--now {
+.react-calendar__tile.react-calendar__tile--now {
   background: #fff0f5 !important;
   color: #ff758c !important;
   border-radius: 8px;
 }
 
 /* 選択中 */
-.react-calendar__tile--active {
+.react-calendar__tile.react-calendar__tile--active {
   background: #ff758c !important;
   color: white !important;
   border-radius: 8px;

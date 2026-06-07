@@ -4,7 +4,11 @@
       "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat \"{}\"')",
       "Bash(npm run *)",
       "Bash(git -C /Users/work/Documents/KakeiboApp/kakeibo-pwa remote -v)",
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(sips -s format png IMG_7522.JPG --out public/icons/icon-512.png)",
+      "Bash(sips -z 512 512 public/icons/icon-512.png)",
+      "Bash(sips -z 192 192 public/icons/icon-512.png --out public/icons/icon-192.png)",
+      "Bash(sips -z 180 180 public/icons/icon-512.png --out public/icons/apple-touch-icon.png)"
     ]
   }
 }

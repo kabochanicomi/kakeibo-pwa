@@ -72,6 +72,14 @@ function CalendarScreen() {
     );
   };
 
+  const tileClassName = ({ date: d, view }) => {
+    if (view !== 'month') return null;
+    const dow = d.getDay();
+    if (dow === 0) return 'tile-sunday';
+    if (dow === 6) return 'tile-saturday';
+    return 'tile-weekday';
+  };
+
   return (
     <>
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -154,6 +162,7 @@ function CalendarScreen() {
             prev2Label={null}
             next2Label={null}
             tileContent={tileContent}
+            tileClassName={tileClassName}
           />
         </div>
 
