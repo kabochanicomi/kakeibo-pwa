@@ -32,6 +32,34 @@ export async function addTransaction(data) {
   });
 }
 
+export async function getTransactionsByDate(date) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const index = tx.objectStore(STORE).index('date');
+    const req = index.getAll(date);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+export async function updateTransaction(id, data) {
+  const db = await openDB();
+  const yearMonth = data.date.slice(0, 7);
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const getReq = store.get(id);
+    getReq.onsuccess = () => {
+      const existing = getReq.result;
+      const putReq = store.put({ ...existing, ...data, id, yearMonth, updated_at: new Date().toISOString() });
+      putReq.onsuccess = () => resolve();
+      putReq.onerror = () => reject(putReq.error);
+    };
+    getReq.onerror = () => reject(getReq.error);
+  });
+}
+
 export async function getTransactionsByMonth(year, month) {
   const db = await openDB();
   const yearMonth = `${year}-${String(month).padStart(2, '0')}`;

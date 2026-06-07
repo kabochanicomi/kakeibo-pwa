@@ -98,6 +98,12 @@
   border-radius: 8px;
 }
 
+/* 選択中の日付は背景とかぶらないように金額の文字色を変更 */
+.react-calendar__tile.react-calendar__tile--active .tile-income,
+.react-calendar__tile.react-calendar__tile--active .tile-expense {
+  color: #ffffff !important;
+}
+
 /* デフォルトのナビ（年月）を非表示 */
 .react-calendar__navigation {
   display: none !important;

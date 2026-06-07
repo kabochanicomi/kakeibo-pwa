@@ -16,7 +16,7 @@ function formatTileAmount(n) {
   return n.toLocaleString();
 }
 
-function CalendarScreen() {
+function CalendarScreen({ onOpenReport }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [entryDate, setEntryDate] = useState(null);
@@ -37,12 +37,10 @@ function CalendarScreen() {
     (acc, t) => {
       if (t.type === 'income') acc.income += t.amount;
       else if (t.type === 'expense') acc.expense += t.amount;
-      else if (t.type === 'saving') acc.saving += t.amount;
       return acc;
     },
-    { income: 0, expense: 0, saving: 0 }
+    { income: 0, expense: 0 }
   );
-  const balance = summary.income - summary.expense - summary.saving;
 
   const dailyMap = transactions.reduce((acc, t) => {
     if (!acc[t.date]) acc[t.date] = { expense: 0, income: 0 };
@@ -109,19 +107,34 @@ function CalendarScreen() {
               ›
             </button>
           </div>
-          <button
-            onClick={() => signOut(auth)}
-            style={{
-              background: 'none',
-              border: '1px solid rgba(255,255,255,0.6)',
-              color: 'white',
-              borderRadius: '4px',
-              padding: '3px 10px',
-              fontSize: '12px',
-            }}
-          >
-            ログアウト
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={onOpenReport}
+              style={{
+                background: 'none',
+                border: '1px solid rgba(255,255,255,0.6)',
+                color: 'white',
+                borderRadius: '4px',
+                padding: '3px 10px',
+                fontSize: '12px',
+              }}
+            >
+              📊 集計
+            </button>
+            <button
+              onClick={() => signOut(auth)}
+              style={{
+                background: 'none',
+                border: '1px solid rgba(255,255,255,0.6)',
+                color: 'white',
+                borderRadius: '4px',
+                padding: '3px 10px',
+                fontSize: '12px',
+              }}
+            >
+              ログアウト
+            </button>
+          </div>
         </div>
 
         {/* Monthly summary */}
@@ -136,8 +149,6 @@ function CalendarScreen() {
           {[
             { label: '収入', value: summary.income,  color: '#00c7b7' },
             { label: '支出', value: summary.expense, color: '#ff758c' },
-            { label: '貯蓄', value: summary.saving,  color: '#7b92ff' },
-            { label: '残金', value: balance,          color: balance >= 0 ? '#333' : '#ff4444' },
           ].map(({ label, value, color }) => (
             <div key={label} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '11px', color: '#aaa' }}>{label}</div>

@@ -1,22 +1,63 @@
-import { useState } from 'react';
-import { addTransaction } from '../../db';
+import { useState, useEffect, useCallback } from 'react';
+import { addTransaction, updateTransaction, deleteTransaction, getTransactionsByDate } from '../../db';
 import { PAYMENT_METHODS } from '../../constants/categories';
 import CategoryGrid from '../../components/CategoryGrid';
 import Calculator from '../../components/Calculator';
 import './EntryScreen.css';
 
+const TYPE_CONFIG = [
+  { key: 'expense', label: '支出', color: '#ff758c' },
+  { key: 'income',  label: '収入', color: '#00c7b7' },
+  { key: 'saving',  label: '貯蓄', color: '#7b92ff' },
+];
+
 function EntryScreen({ date, onClose, onSaved }) {
+  const [dayTransactions, setDayTransactions] = useState([]);
+  const [editingId, setEditingId] = useState(null);
   const [type, setType] = useState('expense');
   const [category, setCategory] = useState(null);
   const [amount, setAmount] = useState(0);
   const [memo, setMemo] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('cash');
 
+  const loadDay = useCallback(async () => {
+    const data = await getTransactionsByDate(date);
+    setDayTransactions(data);
+  }, [date]);
+
+  useEffect(() => { loadDay(); }, [loadDay]);
+
+  const resetForm = () => {
+    setEditingId(null);
+    setType('expense');
+    setCategory(null);
+    setAmount(0);
+    setMemo('');
+    setPaymentMethod('cash');
+  };
+
+  const startEdit = (t) => {
+    setEditingId(t.id);
+    setType(t.type);
+    setCategory({ id: t.category, label: t.category_label, expense_type: t.expense_type });
+    setAmount(t.amount);
+    setMemo(t.memo ?? '');
+    setPaymentMethod(t.payment_method ?? 'cash');
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('この記録を削除しますか？')) return;
+    await deleteTransaction(id);
+    if (editingId === id) resetForm();
+    await loadDay();
+    onSaved();
+  };
+
   const handleSave = async () => {
     if (amount === 0) { alert('金額を入力してください'); return; }
     if (!category) { alert('カテゴリを選んでください'); return; }
 
-    await addTransaction({
+    const payload = {
       date,
       type,
       expense_type: type === 'expense' ? (category.expense_type ?? null) : null,
@@ -25,17 +66,18 @@ function EntryScreen({ date, onClose, onSaved }) {
       amount,
       payment_method: type === 'expense' ? paymentMethod : null,
       memo: memo.trim(),
-    });
+    };
+
+    if (editingId) {
+      await updateTransaction(editingId, payload);
+    } else {
+      await addTransaction(payload);
+    }
 
     onSaved();
     onClose();
   };
 
-  const TYPE_CONFIG = [
-    { key: 'expense', label: '支出', color: '#ff758c' },
-    { key: 'income',  label: '収入', color: '#00c7b7' },
-    { key: 'saving',  label: '貯蓄', color: '#7b92ff' },
-  ];
   const activeColor = TYPE_CONFIG.find((t) => t.key === type)?.color ?? '#ff758c';
 
   return (
@@ -57,9 +99,46 @@ function EntryScreen({ date, onClose, onSaved }) {
             className="entry-save-btn"
             onPointerDown={(e) => { e.preventDefault(); handleSave(); }}
           >
-            保存
+            {editingId ? '更新' : '保存'}
           </button>
         </div>
+
+        {/* This day's existing entries */}
+        {dayTransactions.length > 0 && (
+          <div className="entry-day-list">
+            {dayTransactions.map((t) => {
+              const color = TYPE_CONFIG.find((c) => c.key === t.type)?.color ?? '#333';
+              return (
+                <div key={t.id} className={`entry-day-item ${editingId === t.id ? 'editing' : ''}`}>
+                  <button
+                    className="entry-day-item-main"
+                    onPointerDown={(e) => { e.preventDefault(); startEdit(t); }}
+                  >
+                    <span className="entry-day-item-cat">{t.category_label}</span>
+                    <span className="entry-day-item-memo">{t.memo}</span>
+                    <span className="entry-day-item-amount" style={{ color }}>
+                      {t.type === 'income' ? '+' : '-'}¥{t.amount.toLocaleString()}
+                    </span>
+                  </button>
+                  <button
+                    className="entry-day-item-delete"
+                    onPointerDown={(e) => { e.preventDefault(); handleDelete(t.id); }}
+                  >
+                    🗑
+                  </button>
+                </div>
+              );
+            })}
+            {editingId && (
+              <button
+                className="entry-day-new-btn"
+                onPointerDown={(e) => { e.preventDefault(); resetForm(); }}
+              >
+                ＋ 新規登録に戻る
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Type tabs */}
         <div className="entry-type-tabs">
