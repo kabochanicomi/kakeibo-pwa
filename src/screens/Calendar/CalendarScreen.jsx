@@ -191,8 +191,9 @@ prevLabel={null}
                     onClick={() => openEntry(selectedDate)}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
-                      padding: '10px 16px', background: 'none', border: 'none',
+                      padding: '14px 16px', background: 'none', border: 'none',
                       borderBottom: '1px solid #f9f9f9', textAlign: 'left', cursor: 'pointer',
+                      lineHeight: '1.4',
                     }}
                   >
                     <span style={{ flex: 1, fontSize: '13px', color: '#555' }}>{t.category_label}</span>
