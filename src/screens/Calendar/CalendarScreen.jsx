@@ -176,20 +176,10 @@ function CalendarScreen({ onOpenReport }) {
             </div>
           ) : (
             <>
-              <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                padding: '10px 16px', borderBottom: '1px solid #f5f5f5',
-              }}>
+              <div style={{ padding: '10px 16px', borderBottom: '1px solid #f5f5f5' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#555' }}>
                   {formatDayHeader(selectedDate)}
                 </span>
-                <button
-                  onPointerDown={(e) => { e.preventDefault(); openEntry(selectedDate); }}
-                  style={{
-                    background: '#ff758c', border: 'none', color: 'white',
-                    borderRadius: '20px', padding: '4px 14px', fontSize: '13px', fontWeight: 'bold',
-                  }}
-                >＋ 追加</button>
               </div>
               {dayTransactions.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#ccc', padding: '20px 0', fontSize: '13px' }}>
