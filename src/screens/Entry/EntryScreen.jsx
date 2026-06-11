@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { addTransaction, updateTransaction, deleteTransaction, getTransactionsByDate } from '../../db';
-import { PAYMENT_METHODS } from '../../constants/categories';
+import { CATEGORIES, PAYMENT_METHODS } from '../../constants/categories';
+
+const CATEGORY_MAP = {};
+CATEGORIES.income.forEach((c) => { CATEGORY_MAP[c.id] = c; });
+Object.values(CATEGORIES.expense).flat().forEach((c) => { CATEGORY_MAP[c.id] = c; });
+CATEGORIES.saving.forEach((c) => { CATEGORY_MAP[c.id] = c; });
 import CategoryGrid from '../../components/CategoryGrid';
 import Calculator from '../../components/Calculator';
 import './EntryScreen.css';
@@ -39,7 +44,8 @@ function EntryScreen({ date, onClose, onSaved }) {
   const startEdit = (t) => {
     setEditingId(t.id);
     setType(t.type);
-    setCategory({ id: t.category, label: t.category_label, expense_type: t.expense_type });
+    const catDef = CATEGORY_MAP[t.category] ?? {};
+    setCategory({ id: t.category, label: t.category_label, expense_type: t.expense_type, group_label: catDef.group_label ?? null });
     setAmount(t.amount);
     setMemo(t.memo ?? '');
     setPaymentMethod(t.payment_method ?? 'cash');
@@ -63,6 +69,7 @@ function EntryScreen({ date, onClose, onSaved }) {
       expense_type: type === 'expense' ? (category.expense_type ?? null) : null,
       category: category.id,
       category_label: category.label,
+      group_label: category.group_label ?? null,
       amount,
       payment_method: type === 'expense' ? paymentMethod : null,
       memo: memo.trim(),

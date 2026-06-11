@@ -41,7 +41,8 @@ function ReportScreen({ onBack }) {
     const amount = typeTransactions.reduce((s, t) => s + t.amount, 0);
     const categoryTotals = {};
     typeTransactions.forEach((t) => {
-      categoryTotals[t.category_label] = (categoryTotals[t.category_label] || 0) + t.amount;
+      const label = t.group_label || t.category_label;
+      categoryTotals[label] = (categoryTotals[label] || 0) + t.amount;
     });
     const categories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
     return { key, label: EXPENSE_TYPE_LABELS[key], amount, pct: expense > 0 ? (amount / expense) * 100 : 0, categories };
@@ -49,7 +50,8 @@ function ReportScreen({ onBack }) {
 
   const categoryTotals = {};
   transactions.filter((t) => t.type === 'expense').forEach((t) => {
-    categoryTotals[t.category_label] = (categoryTotals[t.category_label] || 0) + t.amount;
+    const label = t.group_label || t.category_label;
+    categoryTotals[label] = (categoryTotals[label] || 0) + t.amount;
   });
   const topCategories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]).slice(0, 5);
 

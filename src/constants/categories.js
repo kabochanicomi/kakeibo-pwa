@@ -14,7 +14,10 @@ export const CATEGORIES = {
       { id: 'subscription', label: 'サブスク', icon: '📺' },
     ],
     variable: [
-      { id: 'food',          label: '食費',       icon: '🛒' },
+      { id: 'food_morning', label: '食費（朝食）',   icon: '🍳', group: 'food', group_label: '食費' },
+      { id: 'food_lunch',   label: '食費（昼食）',   icon: '🍱', group: 'food', group_label: '食費' },
+      { id: 'food_dinner',  label: '食費（夕食）',   icon: '🍽️', group: 'food', group_label: '食費' },
+      { id: 'food_other',   label: '食費（その他）', icon: '🛒', group: 'food', group_label: '食費' },
       { id: 'dining',        label: '外食',       icon: '🍜' },
       { id: 'daily',         label: '日用品',     icon: '🧴' },
       { id: 'transport',     label: '交通費',     icon: '🚃' },
