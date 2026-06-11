@@ -151,15 +151,14 @@ function CalendarScreen({ onOpenReport }) {
         </div>
 
         {/* Calendar */}
-        <div style={{ flexShrink: 0, padding: '8px' }}>
+        <div style={{ flexShrink: 0, padding: '4px 8px' }}>
           <Calendar
             onClickDay={(d) => setSelectedDate(toDateStr(d))}
             activeStartDate={new Date(year, month - 1, 1)}
             onActiveStartDateChange={({ activeStartDate }) => setActiveDate(activeStartDate)}
             locale="ja-JP"
             calendarType="gregory"
-            showFixedNumberOfWeeks={true}
-            prevLabel={null}
+prevLabel={null}
             nextLabel={null}
             prev2Label={null}
             next2Label={null}
@@ -189,7 +188,7 @@ function CalendarScreen({ onOpenReport }) {
                 dayTransactions.map((t) => (
                   <button
                     key={t.id}
-                    onPointerDown={(e) => { e.preventDefault(); openEntry(selectedDate); }}
+                    onClick={() => openEntry(selectedDate)}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '10px 16px', background: 'none', border: 'none',

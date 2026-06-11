@@ -16,8 +16,8 @@
 
 /* 曜日ひとつひとつを強制的に7等分 */
 .react-calendar__month-view__weekdays__weekday {
-  flex: 1 0 0% !important; 
-  padding: 10px 0 !important;
+  flex: 1 0 0% !important;
+  padding: 6px 0 !important;
   max-width: none !important;
   display: flex !important;
   justify-content: center !important;
@@ -37,12 +37,12 @@
 
 /* 日付タイル */
 .react-calendar__tile {
-  height: 68px !important;
+  height: 52px !important;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start !important;
-  padding-top: 6px !important;
+  padding-top: 4px !important;
 }
 
 .tile-amounts {
