@@ -173,6 +173,7 @@
   outline: none;
   box-sizing: border-box;
   background: #fff;
+  flex-shrink: 0;
 }
 
 .entry-payment-row {
@@ -180,6 +181,8 @@
   gap: 8px;
   padding: 10px 16px 12px;
   flex-wrap: wrap;
+  flex-shrink: 0;
+  border-top: 1px solid #f0f0f0;
 }
 
 .payment-chip {

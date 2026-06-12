@@ -166,34 +166,34 @@ function EntryScreen({ date, onClose, onSaved }) {
           ¥{amount.toLocaleString()}
         </div>
 
-        {/* Scrollable middle: categories + memo + payment */}
+        {/* Scrollable middle: categories only */}
         <div className="entry-middle">
           <CategoryGrid type={type} selected={category} onSelect={setCategory} />
-
-          <input
-            className="entry-memo-input"
-            type="text"
-            placeholder="メモ（任意）"
-            value={memo}
-            onChange={(e) => setMemo(e.target.value)}
-          />
-
-          {type === 'expense' && (
-            <div className="entry-payment-row">
-              {PAYMENT_METHODS.map((m) => (
-                <button
-                  key={m.id}
-                  className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}
-                  onPointerDown={(e) => { e.preventDefault(); setPaymentMethod(m.id); }}
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* Calculator (always at bottom) */}
+        {/* Fixed area: memo + payment + calculator */}
+        <input
+          className="entry-memo-input"
+          type="text"
+          placeholder="メモ（任意）"
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+        />
+
+        {type === 'expense' && (
+          <div className="entry-payment-row">
+            {PAYMENT_METHODS.map((m) => (
+              <button
+                key={m.id}
+                className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}
+                onPointerDown={(e) => { e.preventDefault(); setPaymentMethod(m.id); }}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         <Calculator value={amount} onChange={setAmount} />
       </div>
     </div>
