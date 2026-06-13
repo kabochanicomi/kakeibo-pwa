@@ -123,21 +123,21 @@ function Calculator({ value, onChange }) {
     return (
       <div style={{ backgroundColor: '#d1d1d6', flexShrink: 0 }}>
         {TOOLBAR}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', padding: '4px 8px 24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', padding: '4px 8px 20px' }}>
           {KEYPAD_KEYS.map(({ k, sub }, i) => {
             if (k === null) return <div key={i} />;
             return (
               <button
                 key={k}
                 onPointerDown={(e) => { e.preventDefault(); handleKeypad(k); }}
-                style={{ ...KEY_BASE, height: '72px', backgroundColor: '#fff', color: '#000', flexDirection: 'column', gap: '2px' }}
+                style={{ ...KEY_BASE, height: '54px', backgroundColor: '#fff', color: '#000', flexDirection: 'column', gap: '1px' }}
               >
                 {k === 'del' ? (
                   <span style={{ fontSize: '22px' }}>⌫</span>
                 ) : (
                   <>
-                    <span style={{ fontSize: '28px', fontWeight: '300', lineHeight: 1 }}>{k}</span>
-                    {sub && <span style={{ fontSize: '10px', color: '#8e8e93', letterSpacing: '1px' }}>{sub}</span>}
+                    <span style={{ fontSize: '22px', fontWeight: '300', lineHeight: 1 }}>{k}</span>
+                    {sub && <span style={{ fontSize: '9px', color: '#8e8e93', letterSpacing: '0.5px' }}>{sub}</span>}
                   </>
                 )}
               </button>
@@ -156,9 +156,10 @@ function Calculator({ value, onChange }) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gridTemplateRows: 'repeat(5, 68px)',
-        gap: '8px',
-        padding: '4px 8px 24px',
+        gridTemplateRows: 'repeat(5, 52px)',
+        gap: '6px',
+        padding: '4px 8px',
+        paddingBottom: 'max(20px, env(safe-area-inset-bottom, 20px))',
       }}>
         {CALC_CELLS.map(([col, row, cs, rs, k, label]) => {
           const bgColor = k === '=' ? '#ff758c' : isOp(k) ? '#ff9f6e' : k === 'C' ? '#a5a5aa' : '#fff';
