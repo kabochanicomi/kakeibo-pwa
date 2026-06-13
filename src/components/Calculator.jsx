@@ -124,8 +124,8 @@ function Calculator({ value, onChange }) {
       <div style={{ backgroundColor: '#d1d1d6', flexShrink: 0 }}>
         {TOOLBAR}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', padding: '4px 8px 20px' }}>
-          {KEYPAD_KEYS.map(({ k, sub }, i) => {
-            if (k === null) return <div key={i} />;
+          {KEYPAD_KEYS.map(({ k, sub }) => {
+            if (k === null) return <div key="empty" />;
             return (
               <button
                 key={k}

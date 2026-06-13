@@ -32,6 +32,7 @@ function CalendarScreen({ onOpenReport }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [dayTransactions, setDayTransactions] = useState([]);
   const [entryDate, setEntryDate] = useState(null);
+  const [editTransaction, setEditTransaction] = useState(null);
 
   const year = activeDate.getFullYear();
   const month = activeDate.getMonth() + 1;
@@ -66,8 +67,8 @@ function CalendarScreen({ onOpenReport }) {
     return acc;
   }, {});
 
-  const openEntry = (dateStr) => setEntryDate(dateStr);
-  const closeEntry = () => setEntryDate(null);
+  const openEntry = (dateStr, transaction = null) => { setEditTransaction(transaction); setEntryDate(dateStr); };
+  const closeEntry = () => { setEntryDate(null); setEditTransaction(null); };
 
   const handlePlusClick = () => openEntry(selectedDate ?? toDateStr(new Date()));
 
@@ -188,7 +189,7 @@ prevLabel={null}
                 dayTransactions.map((t) => (
                   <button
                     key={t.id}
-                    onClick={() => openEntry(selectedDate)}
+                    onClick={() => openEntry(selectedDate, t)}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '14px 16px', background: 'none', border: 'none',
@@ -222,7 +223,7 @@ prevLabel={null}
       </div>
 
       {entryDate && (
-        <EntryScreen date={entryDate} onClose={closeEntry} onSaved={handleSaved} />
+        <EntryScreen date={entryDate} onClose={closeEntry} onSaved={handleSaved} editTransaction={editTransaction} />
       )}
     </>
   );
