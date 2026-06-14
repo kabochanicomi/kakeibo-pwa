@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { addTransaction, updateTransaction, deleteTransaction, getTransactionsByDate } from '../../db';
 import { syncNow } from '../../utils/sync';
 import { getPaymentMethods } from '../../utils/paymentSettings';
@@ -32,6 +32,8 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
   const [memo, setMemo] = useState(editTransaction?.memo ?? '');
   const [storeName, setStoreName] = useState(editTransaction?.store_name ?? '');
   const [paymentMethod, setPaymentMethod] = useState(editTransaction?.payment_method ?? null);
+  const chipTouchStart = useRef(null);
+  const [pressedChipId, setPressedChipId] = useState(null);
 
   const loadDay = useCallback(async () => {
     const data = await getTransactionsByDate(date);
@@ -120,7 +122,11 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
           >
             ✕
           </button>
-          <span className="entry-date-label">{date.replace(/-/g, '/')}</span>
+          <span className="entry-date-label">{(() => {
+            const [y, m, d] = date.split('-').map(Number);
+            const dow = ['日','月','火','水','木','金','土'][new Date(y, m - 1, d).getDay()];
+            return `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}（${dow}）`;
+          })()}</span>
           <div style={{ width: 30 }} />
         </div>
 
@@ -210,8 +216,20 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
                   {getPaymentMethods().filter((m) => m.visible).map((m) => (
                     <button
                       key={m.id}
-                      className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}
-                      onClick={() => handlePaymentSelect(m.id)}
+                      className={`payment-chip ${paymentMethod === m.id ? 'active' : ''} ${pressedChipId === m.id ? 'pressing' : ''}`}
+                      onPointerDown={(e) => {
+                        chipTouchStart.current = { x: e.clientX, y: e.clientY };
+                        setPressedChipId(m.id);
+                      }}
+                      onPointerUp={(e) => {
+                        if (!chipTouchStart.current) return;
+                        const dx = Math.abs(e.clientX - chipTouchStart.current.x);
+                        const dy = Math.abs(e.clientY - chipTouchStart.current.y);
+                        chipTouchStart.current = null;
+                        setPressedChipId(null);
+                        if (dx < 10 && dy < 10) handlePaymentSelect(m.id);
+                      }}
+                      onPointerCancel={() => { chipTouchStart.current = null; setPressedChipId(null); }}
                     >
                       {m.label}
                     </button>

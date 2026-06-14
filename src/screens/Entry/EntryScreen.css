@@ -212,6 +212,17 @@
   font-weight: bold;
 }
 
+.payment-chip.pressing {
+  background: #ffe0e8;
+  border-color: #ff758c;
+  color: #ff758c;
+}
+
+.payment-chip.active.pressing {
+  background: #e8607a;
+  border-color: #e8607a;
+}
+
 .entry-category-btn {
   display: flex;
   align-items: center;

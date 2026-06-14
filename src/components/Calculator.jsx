@@ -44,6 +44,9 @@ const KEY_BASE = {
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'pointer',
+  WebkitUserSelect: 'none',
+  userSelect: 'none',
+  WebkitTouchCallout: 'none',
 };
 
 function Calculator({ value, onChange }) {
@@ -52,6 +55,11 @@ function Calculator({ value, onChange }) {
   const [prev, setPrev] = useState(null);
   const [op, setOp]   = useState(null);
   const [waiting, setWaiting] = useState(false);
+  const [pressedKey, setPressedKey] = useState(null);
+
+  const keyPress = (k) => setPressedKey(k);
+  const keyRelease = () => setPressedKey(null);
+  const pressing = (k) => pressedKey === k ? { filter: 'brightness(0.82)' } : {};
 
   const handleKeypad = (k) => {
     if (k === null) return;
@@ -129,8 +137,10 @@ function Calculator({ value, onChange }) {
             return (
               <button
                 key={k}
-                onPointerDown={(e) => { e.preventDefault(); handleKeypad(k); }}
-                style={{ ...KEY_BASE, height: '54px', backgroundColor: '#fff', color: '#000', flexDirection: 'column', gap: '1px' }}
+                onPointerDown={(e) => { e.preventDefault(); keyPress(k); }}
+                onPointerUp={(e) => { keyRelease(); handleKeypad(k); }}
+                onPointerCancel={keyRelease}
+                style={{ ...KEY_BASE, height: '54px', backgroundColor: '#fff', color: '#000', flexDirection: 'column', gap: '1px', ...pressing(k) }}
               >
                 {k === 'del' ? (
                   <span style={{ fontSize: '22px' }}>⌫</span>
@@ -167,7 +177,9 @@ function Calculator({ value, onChange }) {
           return (
             <button
               key={k}
-              onPointerDown={(e) => { e.preventDefault(); handleCalc(k); }}
+              onPointerDown={(e) => { e.preventDefault(); keyPress(k); }}
+              onPointerUp={(e) => { keyRelease(); handleCalc(k); }}
+              onPointerCancel={keyRelease}
               style={{
                 ...KEY_BASE,
                 gridColumn: cs > 1 ? `${col} / span ${cs}` : col,
@@ -176,6 +188,7 @@ function Calculator({ value, onChange }) {
                 color: txtColor,
                 fontSize: k === 'del' ? '20px' : '24px',
                 fontWeight: isOp(k) || k === '=' ? '400' : '300',
+                ...pressing(k),
               }}
             >
               {label}
