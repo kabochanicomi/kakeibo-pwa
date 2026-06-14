@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './CalendarScreen.css';
@@ -34,6 +34,7 @@ function CalendarScreen({ onOpenReport, onOpenImport }) {
   const [entryDate, setEntryDate] = useState(null);
   const [editTransaction, setEditTransaction] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const touchStartX = useRef(null);
 
   const year = activeDate.getFullYear();
   const month = activeDate.getMonth() + 1;
@@ -180,7 +181,17 @@ function CalendarScreen({ onOpenReport, onOpenImport }) {
         </div>
 
         {/* Calendar */}
-        <div style={{ flexShrink: 0, padding: '4px 8px' }}>
+        <div
+          style={{ flexShrink: 0, padding: '4px 8px' }}
+          onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+          onTouchEnd={(e) => {
+            if (touchStartX.current === null) return;
+            const delta = e.changedTouches[0].clientX - touchStartX.current;
+            if (delta < -50) setActiveDate(new Date(year, month, 1));
+            else if (delta > 50) setActiveDate(new Date(year, month - 2, 1));
+            touchStartX.current = null;
+          }}
+        >
           <Calendar
             onClickDay={(d) => setSelectedDate(toDateStr(d))}
             activeStartDate={new Date(year, month - 1, 1)}

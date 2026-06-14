@@ -92,13 +92,11 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
   };
 
   const handlePaymentSelect = (id) => {
-    if (amount === 0) { alert('金額を入力してください'); return; }
     setPaymentMethod(id);
     setStep('category');
   };
 
   const handleGoToCategory = () => {
-    if (amount === 0) { alert('金額を入力してください'); return; }
     setStep('category');
   };
 
@@ -203,7 +201,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
             {/* Payment chips (expense) → tap to advance / Category nav (income, saving) */}
             {type === 'expense' ? (
               <div className="entry-payment-row">
-                {PAYMENT_METHODS.map((m) => (
+                {PAYMENT_METHODS.filter((m) => m.visible).map((m) => (
                   <button
                     key={m.id}
                     className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}

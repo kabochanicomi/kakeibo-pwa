@@ -46,18 +46,18 @@ export const CATEGORIES = {
 };
 
 export const PAYMENT_METHODS = [
-  { id: 'cash',         label: '現金',          group: 'cash',   group_label: '現金' },
-  { id: 'famima_card',  label: 'ファミマカード', group: 'credit', group_label: 'クレジットカード' },
-  { id: 'aeon_highway', label: 'イオン首都高',         group: 'credit', group_label: 'クレジットカード' },
-  { id: 'eneos_card',   label: 'ENEOSカード',          group: 'credit', group_label: 'クレジットカード' },
-  { id: 'bic_suica',    label: 'ビックカメラSuicaカード', group: 'credit', group_label: 'クレジットカード' },
-  { id: 'saison_gold',  label: 'セゾンゴールド',         group: 'credit', group_label: 'クレジットカード' },
-  { id: 'saison_pearl', label: 'セゾンパール',           group: 'credit', group_label: 'クレジットカード' },
-  { id: 'uc_card',      label: 'UCカード',               group: 'credit', group_label: 'クレジットカード' },
-  { id: 'paypay',       label: 'PayPay',         group: 'ic',     group_label: '電子マネー' },
-  { id: 'suica',        label: 'Suica',          group: 'ic',     group_label: '電子マネー' },
-  { id: 'bank',         label: '口座引落',       group: 'bank',   group_label: '口座引落' },
-  { id: 'other',        label: 'その他',         group: 'other',  group_label: 'その他' },
+  { id: 'cash',         label: '現金',                   group: 'cash',   group_label: '現金',             visible: true  },
+  { id: 'famima_card',  label: 'ファミマカード',           group: 'credit', group_label: 'クレジットカード', visible: true  },
+  { id: 'aeon_highway', label: 'イオン首都高',             group: 'credit', group_label: 'クレジットカード', visible: true  },
+  { id: 'eneos_card',   label: 'ENEOSカード',              group: 'credit', group_label: 'クレジットカード', visible: true  },
+  { id: 'bic_suica',    label: 'ビックカメラSuicaカード',  group: 'credit', group_label: 'クレジットカード', visible: true  },
+  { id: 'saison_gold',  label: 'セゾンゴールド',           group: 'credit', group_label: 'クレジットカード', visible: true  },
+  { id: 'saison_pearl', label: 'セゾンパール',             group: 'credit', group_label: 'クレジットカード', visible: false },
+  { id: 'uc_card',      label: 'UCカード',                 group: 'credit', group_label: 'クレジットカード', visible: true  },
+  { id: 'paypay',       label: 'PayPay',                   group: 'ic',     group_label: '電子マネー',       visible: true  },
+  { id: 'suica',        label: 'Suica',                    group: 'ic',     group_label: '電子マネー',       visible: true  },
+  { id: 'bank',         label: '口座引落',                 group: 'bank',   group_label: '口座引落',         visible: false },
+  { id: 'other',        label: 'その他',                   group: 'other',  group_label: 'その他',           visible: false },
 ];
 
 export const EXPENSE_TYPE_LABELS = {
