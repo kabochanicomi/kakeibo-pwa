@@ -28,16 +28,18 @@ export async function syncNow() {
   await _processPendingDeletes();
 }
 
-// 新端末初回ログイン時: IndexedDB が空なら Firestore から全件取得
+// ログイン時: Firestore にあってローカルにないレコードを取り込む
 export async function initFromFirestore() {
   if (!_uid || !navigator.onLine) return;
-  const all = await getAllTransactions();
-  if (all.length > 0) return;
   try {
     const snap = await getDocs(txCol());
     if (snap.empty) return;
-    const records = snap.docs.map((d) => ({ firestoreId: d.id, synced: true, ...d.data() }));
-    await bulkSetFromFirestore(records);
+    const all = await getAllTransactions();
+    const localIds = new Set(all.map((r) => r.firestoreId).filter(Boolean));
+    const newRecords = snap.docs
+      .filter((d) => !localIds.has(d.id))
+      .map((d) => ({ firestoreId: d.id, synced: true, ...d.data() }));
+    if (newRecords.length > 0) await bulkSetFromFirestore(newRecords);
   } catch (e) {
     console.warn('initFromFirestore failed', e);
   }

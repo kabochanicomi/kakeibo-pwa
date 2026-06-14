@@ -51,6 +51,7 @@ function ImportScreen({ onBack }) {
   const [unknownRows, setUnknownRows] = useState([]);
   const [error, setError] = useState('');
   const [importing, setImporting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [importResult, setImportResult] = useState(null);
   const [showValid, setShowValid] = useState(false);
   const [showUnknown, setShowUnknown] = useState(false);
@@ -91,12 +92,15 @@ function ImportScreen({ onBack }) {
     setImporting(true);
     try {
       const count = await bulkAddTransactions(data);
+      setImporting(false);
+      setSyncing(true);
+      await syncNow();
+      setSyncing(false);
       setImportResult({ count, skipped: unknownRows.length });
-      syncNow().catch(console.warn);
     } catch {
       setError('インポート中にエラーが発生しました');
-    } finally {
       setImporting(false);
+      setSyncing(false);
     }
   };
 
@@ -126,9 +130,9 @@ function ImportScreen({ onBack }) {
               <button
                 className="import-menu-item"
                 onClick={handleImport}
-                disabled={importing || validRows.length === 0}
+                disabled={importing || syncing || validRows.length === 0}
               >
-                📥 {importing ? 'インポート中...' : `${validRows.length}件をインポート`}
+                📥 {importing ? 'インポート中...' : syncing ? 'Firestoreに同期中...' : `${validRows.length}件をインポート`}
               </button>
             )}
             <button className="import-menu-item import-menu-item-danger" onClick={handleClearAll}>
@@ -270,9 +274,9 @@ function ImportScreen({ onBack }) {
             <button
               className="import-btn"
               onClick={handleImport}
-              disabled={importing || validRows.length === 0}
+              disabled={importing || syncing || validRows.length === 0}
             >
-              {importing ? 'インポート中...' : `${validRows.length}件をインポート`}
+              {importing ? 'インポート中...' : syncing ? 'Firestoreに同期中...' : `${validRows.length}件をインポート`}
             </button>
           </>
         )}
