@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { addTransaction, updateTransaction, deleteTransaction, getTransactionsByDate } from '../../db';
+import { syncNow } from '../../utils/sync';
 import { CATEGORIES, PAYMENT_METHODS } from '../../constants/categories';
 
 const CATEGORY_MAP = {};
@@ -67,6 +68,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
     if (editingId === id) resetForm();
     await loadDay();
     onSaved();
+    syncNow().catch(console.warn);
   };
 
   const handleSaveWithCat = async (cat) => {
@@ -89,6 +91,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
     }
     onSaved();
     onClose();
+    syncNow().catch(console.warn);
   };
 
   const handlePaymentSelect = (id) => {

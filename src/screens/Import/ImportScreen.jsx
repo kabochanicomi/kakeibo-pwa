@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { bulkAddTransactions, clearAllTransactions } from '../../db';
+import { syncNow, clearFirestoreTransactions } from '../../utils/sync';
 import { mapCSVRows, PM_LABEL } from '../../utils/csvMapping';
 import { EXPENSE_TYPE_LABELS } from '../../constants/categories';
 import './ImportScreen.css';
@@ -91,6 +92,7 @@ function ImportScreen({ onBack }) {
     try {
       const count = await bulkAddTransactions(data);
       setImportResult({ count, skipped: unknownRows.length });
+      syncNow().catch(console.warn);
     } catch {
       setError('インポート中にエラーが発生しました');
     } finally {
@@ -102,6 +104,7 @@ function ImportScreen({ onBack }) {
     setShowMenu(false);
     if (!window.confirm('全データを削除しますか？この操作は取り消せません。')) return;
     await clearAllTransactions();
+    clearFirestoreTransactions().catch(console.warn);
     alert('全データを削除しました。');
   };
 

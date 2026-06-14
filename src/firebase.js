@@ -1,14 +1,16 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA1KwVXRrA7HHed0VmW632e5ZiY51KzbMo",
-  authDomain: "my-kakeibo-1bde9.firebaseapp.com",
-  projectId: "my-kakeibo-1bde9",
-  storageBucket: "my-kakeibo-1bde9.firebasestorage.app",
-  messagingSenderId: "288902774543",
-  appId: "1:288902774543:web:326059aa293c9b11fd887a",
+  apiKey: "AIzaSyBlMz64wqwmsfL2ZlRmI8DP5I9NlxEF5aA",
+  authDomain: "kakeibo-pwa-d3b9c.firebaseapp.com",
+  projectId: "kakeibo-pwa-d3b9c",
+  storageBucket: "kakeibo-pwa-d3b9c.firebasestorage.app",
+  messagingSenderId: "446234220805",
+  appId: "1:446234220805:web:cf1fd40fafec3553937f6c",
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const firestore = getFirestore(app);
