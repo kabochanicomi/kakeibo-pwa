@@ -146,7 +146,6 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
                   {[
                     { label: '📊 月次集計', action: () => { onOpenReport(); setMenuOpen(false); } },
                     { label: '📅 年次集計', action: () => { onOpenAnnualReport(); setMenuOpen(false); } },
-                    { label: '📥 データ取り込み', action: () => { onOpenImport(); setMenuOpen(false); } },
                     { label: '💳 支払い方法の設定', action: () => { onOpenPaymentSettings(); setMenuOpen(false); } },
                     { label: 'ℹ️ このアプリについて', action: () => { alert(`家計簿アプリ\nビルド日時: ${__BUILD_DATE__}`); setMenuOpen(false); } },
                     { label: '🚪 ログアウト', action: () => { signOut(auth); setMenuOpen(false); } },
@@ -249,7 +248,7 @@ prevLabel={null}
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             pointerEvents: 'none', zIndex: 0,
           }}>
-            <img src="/kakeibo-pwa/icons/apple-touch-icon.png" alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.06 }} />
+            <img src="/kakeibo-pwa/icons/apple-touch-icon.png" alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.11 }} />
           </div>
           <div style={{ position: 'relative', zIndex: 1 }}>
           {!selectedDate ? (
