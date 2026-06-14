@@ -156,7 +156,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
                           {[t.store_name, t.memo].filter(Boolean).join(' · ')}
                         </span>
                         <span className="entry-day-item-amount" style={{ color }}>
-                          {t.type === 'income' ? '+' : '-'}¥{t.amount.toLocaleString()}
+                          ¥{t.amount.toLocaleString()}
                         </span>
                       </button>
                       <button
