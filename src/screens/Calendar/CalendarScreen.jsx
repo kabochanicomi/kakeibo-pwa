@@ -24,7 +24,7 @@ function formatDayHeader(dateStr) {
 }
 
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
-const TYPE_SIGN  = { income: '+', expense: '-', saving: '-' };
+const TYPE_SIGN  = { income: '', expense: '', saving: '' };
 
 function CalendarScreen({ onOpenReport, onOpenImport }) {
   const [activeDate, setActiveDate] = useState(new Date());
@@ -86,7 +86,7 @@ function CalendarScreen({ onOpenReport, onOpenImport }) {
     return (
       <div className="tile-amounts">
         {day.income > 0 && <span className="tile-income">+{formatTileAmount(day.income)}</span>}
-        {day.expense > 0 && <span className="tile-expense">-{formatTileAmount(day.expense)}</span>}
+        {day.expense > 0 && <span className="tile-expense">{formatTileAmount(day.expense)}</span>}
       </div>
     );
   };
@@ -236,7 +236,7 @@ prevLabel={null}
                       lineHeight: '1.4',
                     }}
                   >
-                    <span style={{ flex: 1, fontSize: '13px', color: '#555' }}>{t.category_label}</span>
+                    <span style={{ flex: 1, fontSize: '13px', color: '#555' }}>{t.store_name || t.category_label}</span>
                     {t.memo ? <span style={{ fontSize: '12px', color: '#bbb' }}>{t.memo}</span> : null}
                     <span style={{ fontSize: '14px', fontWeight: 'bold', color: TYPE_COLOR[t.type], whiteSpace: 'nowrap' }}>
                       {TYPE_SIGN[t.type]}¥{t.amount.toLocaleString()}

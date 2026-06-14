@@ -38,3 +38,4 @@ my-kakeibo/
 └── vite.config.js       # Viteの設定
 
 https://kabochanicomi.github.io/kakeibo-pwa/
+http://localhost:5173/kakeibo-pwa/
