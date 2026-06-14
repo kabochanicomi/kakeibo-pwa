@@ -191,16 +191,8 @@
   display: flex;
   gap: 8px;
   padding: 10px 16px 12px;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  flex-wrap: wrap;
   border-top: 1px solid #f0f0f0;
-  scrollbar-width: none;
-}
-
-.entry-payment-row::-webkit-scrollbar {
-  display: none;
 }
 
 .payment-chip {

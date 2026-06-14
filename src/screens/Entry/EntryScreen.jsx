@@ -211,7 +211,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
                     <button
                       key={m.id}
                       className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}
-                      onPointerDown={(e) => { e.preventDefault(); handlePaymentSelect(m.id); }}
+                      onClick={() => handlePaymentSelect(m.id)}
                     >
                       {m.label}
                     </button>

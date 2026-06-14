@@ -146,6 +146,7 @@ function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
                     { label: '📊 集計', action: () => { onOpenReport(); setMenuOpen(false); } },
                     { label: '📥 データ取り込み', action: () => { onOpenImport(); setMenuOpen(false); } },
                     { label: '💳 支払い方法の設定', action: () => { onOpenPaymentSettings(); setMenuOpen(false); } },
+                    { label: 'ℹ️ このアプリについて', action: () => { alert(`家計簿アプリ\nビルド日時: ${__BUILD_DATE__}`); setMenuOpen(false); } },
                     { label: '🚪 ログアウト', action: () => { signOut(auth); setMenuOpen(false); } },
                   ].map(({ label, action }) => (
                     <button
