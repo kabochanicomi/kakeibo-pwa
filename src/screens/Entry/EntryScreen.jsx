@@ -179,59 +179,62 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
               </div>
             )}
 
-            {/* Amount display */}
-            <div className="entry-amount" style={{ color: activeColor }}>
-              ¥{amount.toLocaleString()}
+            {/* Scrollable middle: amount + inputs + payment — keeps Calculator pinned at bottom */}
+            <div className="entry-scroll-area">
+              {/* Amount display */}
+              <div className="entry-amount" style={{ color: activeColor }}>
+                ¥{amount.toLocaleString()}
+              </div>
+
+              {/* Store name input */}
+              <input
+                className="entry-memo-input"
+                type="text"
+                placeholder="店名（任意）"
+                value={storeName}
+                onChange={(e) => setStoreName(e.target.value)}
+              />
+
+              {/* Memo input */}
+              <textarea
+                className="entry-memo-input entry-memo-textarea"
+                placeholder="メモ（任意）"
+                value={memo}
+                rows={2}
+                onChange={(e) => setMemo(e.target.value)}
+              />
+
+              {/* Payment chips (expense) → tap to advance / Category nav (income, saving) */}
+              {type === 'expense' ? (
+                <div className="entry-payment-row">
+                  {getPaymentMethods().filter((m) => m.visible).map((m) => (
+                    <button
+                      key={m.id}
+                      className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}
+                      onPointerDown={(e) => { e.preventDefault(); handlePaymentSelect(m.id); }}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <button
+                  className="entry-category-btn"
+                  onPointerDown={(e) => { e.preventDefault(); handleGoToCategory(); }}
+                >
+                  <span style={{ color: category ? '#333' : '#aaa' }}>
+                    {category
+                      ? `${CATEGORY_MAP[category.id]?.icon ?? ''} ${category.label}`
+                      : 'カテゴリを選ぶ'
+                    }
+                  </span>
+                  <span className="entry-category-btn-arrow">›</span>
+                </button>
+              )}
             </div>
 
-            {/* Store name input */}
-            <input
-              className="entry-memo-input"
-              type="text"
-              placeholder="店名（任意）"
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-            />
-
-            {/* Memo input */}
-            <textarea
-              className="entry-memo-input entry-memo-textarea"
-              placeholder="メモ（任意）"
-              value={memo}
-              rows={2}
-              onChange={(e) => setMemo(e.target.value)}
-            />
-
-            {/* Payment chips (expense) → tap to advance / Category nav (income, saving) */}
-            {type === 'expense' ? (
-              <div className="entry-payment-row">
-                {getPaymentMethods().filter((m) => m.visible).map((m) => (
-                  <button
-                    key={m.id}
-                    className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}
-                    onPointerDown={(e) => { e.preventDefault(); handlePaymentSelect(m.id); }}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <button
-                className="entry-category-btn"
-                onPointerDown={(e) => { e.preventDefault(); handleGoToCategory(); }}
-              >
-                <span style={{ color: category ? '#333' : '#aaa' }}>
-                  {category
-                    ? `${CATEGORY_MAP[category.id]?.icon ?? ''} ${category.label}`
-                    : 'カテゴリを選ぶ'
-                  }
-                </span>
-                <span className="entry-category-btn-arrow">›</span>
-              </button>
-            )}
-
             <Calculator value={amount} onChange={setAmount} />
-          </>
+</>
         ) : (
           <>
             {/* Step 2: Category selection */}

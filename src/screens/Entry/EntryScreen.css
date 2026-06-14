@@ -150,12 +150,17 @@
   font-weight: bold;
 }
 
+.entry-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .entry-amount {
   font-size: 38px;
   font-weight: bold;
   text-align: right;
   padding: 6px 20px 10px;
-  flex-shrink: 0;
 }
 
 .entry-middle {
@@ -186,9 +191,16 @@
   display: flex;
   gap: 8px;
   padding: 10px 16px 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   flex-shrink: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-top: 1px solid #f0f0f0;
+  scrollbar-width: none;
+}
+
+.entry-payment-row::-webkit-scrollbar {
+  display: none;
 }
 
 .payment-chip {
