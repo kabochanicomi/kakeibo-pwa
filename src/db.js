@@ -82,6 +82,31 @@ export async function deleteTransaction(id) {
   });
 }
 
+export async function bulkAddTransactions(dataArray) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const now = new Date().toISOString();
+    for (const data of dataArray) {
+      const yearMonth = data.date.slice(0, 7);
+      store.add({ ...data, yearMonth, created_at: now });
+    }
+    tx.oncomplete = () => resolve(dataArray.length);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+export async function clearAllTransactions() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const req = tx.objectStore(STORE).clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
 export async function getAllTransactions() {
   const db = await openDB();
   return new Promise((resolve, reject) => {

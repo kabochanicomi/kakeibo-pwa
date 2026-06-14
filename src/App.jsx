@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import LoginScreen from './screens/Login/LoginScreen'; // ログイン画面（部品）
-import CalendarScreen from './screens/Calendar/CalendarScreen'; // カレンダー画面（部品）
-import ReportScreen from './screens/Report/ReportScreen'; // 集計画面（部品）
+import LoginScreen from './screens/Login/LoginScreen';
+import CalendarScreen from './screens/Calendar/CalendarScreen';
+import ReportScreen from './screens/Report/ReportScreen';
+import ImportScreen from './screens/Import/ImportScreen';
 
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // 読み込み中状態
-  const [view, setView] = useState('calendar'); // 'calendar' | 'report'
+  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'import'
 
   useEffect(() => {
     // ログイン状態を監視
@@ -33,8 +34,13 @@ function App() {
         <LoginScreen />
       ) : view === 'report' ? (
         <ReportScreen onBack={() => setView('calendar')} />
+      ) : view === 'import' ? (
+        <ImportScreen onBack={() => setView('calendar')} />
       ) : (
-        <CalendarScreen onOpenReport={() => setView('report')} />
+        <CalendarScreen
+          onOpenReport={() => setView('report')}
+          onOpenImport={() => setView('import')}
+        />
       )}
     </div>
   );

@@ -26,13 +26,14 @@ function formatDayHeader(dateStr) {
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
 const TYPE_SIGN  = { income: '+', expense: '-', saving: '-' };
 
-function CalendarScreen({ onOpenReport }) {
+function CalendarScreen({ onOpenReport, onOpenImport }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [dayTransactions, setDayTransactions] = useState([]);
   const [entryDate, setEntryDate] = useState(null);
   const [editTransaction, setEditTransaction] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const year = activeDate.getFullYear();
   const month = activeDate.getMonth() + 1;
@@ -122,15 +123,42 @@ function CalendarScreen({ onOpenReport }) {
               style={{ background: 'none', border: 'none', color: 'white', fontSize: '22px', padding: '0 4px' }}
             >›</button>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ position: 'relative' }}>
             <button
-              onClick={onOpenReport}
-              style={{ background: 'none', border: '1px solid rgba(255,255,255,0.6)', color: 'white', borderRadius: '4px', padding: '3px 10px', fontSize: '12px' }}
-            >📊 集計</button>
-            <button
-              onClick={() => signOut(auth)}
-              style={{ background: 'none', border: '1px solid rgba(255,255,255,0.6)', color: 'white', borderRadius: '4px', padding: '3px 10px', fontSize: '12px' }}
-            >ログアウト</button>
+              onClick={() => setMenuOpen((v) => !v)}
+              style={{ background: 'none', border: 'none', color: 'white', fontSize: '22px', padding: '4px 6px', lineHeight: 1 }}
+            >☰</button>
+            {menuOpen && (
+              <>
+                <div
+                  style={{ position: 'fixed', inset: 0, zIndex: 9 }}
+                  onClick={() => setMenuOpen(false)}
+                />
+                <div style={{
+                  position: 'absolute', right: 0, top: 'calc(100% + 6px)',
+                  backgroundColor: '#fff', borderRadius: '10px',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+                  minWidth: '160px', zIndex: 10, overflow: 'hidden',
+                }}>
+                  {[
+                    { label: '📊 集計', action: () => { onOpenReport(); setMenuOpen(false); } },
+                    { label: '📥 データ取り込み', action: () => { onOpenImport(); setMenuOpen(false); } },
+                    { label: '🚪 ログアウト', action: () => { signOut(auth); setMenuOpen(false); } },
+                  ].map(({ label, action }) => (
+                    <button
+                      key={label}
+                      onClick={action}
+                      style={{
+                        display: 'block', width: '100%', padding: '14px 16px',
+                        background: 'none', border: 'none', textAlign: 'left',
+                        fontSize: '14px', color: '#333', borderBottom: '1px solid #f0f0f0',
+                        cursor: 'pointer',
+                      }}
+                    >{label}</button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
 

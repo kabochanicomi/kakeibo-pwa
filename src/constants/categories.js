@@ -19,8 +19,10 @@ export const CATEGORIES = {
       { id: 'food_dinner',  label: '食費（夕食）',   icon: '🍽️', group: 'food', group_label: '食費' },
       { id: 'food_other',   label: '食費（その他）', icon: '🛒', group: 'food', group_label: '食費' },
 { id: 'daily',         label: '日用品',     icon: '🧴' },
-      { id: 'transport',     label: '交通費',     icon: '🚃', group: 'transport', group_label: '交通費' },
+      { id: 'expressway',    label: '高速道路',   icon: '🛣️', group: 'transport', group_label: '交通費' },
       { id: 'parking',       label: '駐車場',     icon: '🅿️', group: 'transport', group_label: '交通費' },
+      { id: 'transit',       label: '交通機関',   icon: '🚃', group: 'transport', group_label: '交通費' },
+      { id: 'fuel',          label: 'ガソリン代', icon: '⛽', group: 'transport', group_label: '交通費' },
       { id: 'medical',       label: '医療・健康', icon: '🏥' },
       { id: 'clothing',      label: '衣服・美容', icon: '👗' },
       { id: 'entertainment', label: '娯楽・趣味', icon: '🎮' },
@@ -44,11 +46,18 @@ export const CATEGORIES = {
 };
 
 export const PAYMENT_METHODS = [
-  { id: 'cash',   label: '現金' },
-  { id: 'credit', label: 'クレカ' },
-  { id: 'ic',     label: '電子マネー' },
-  { id: 'bank',   label: '口座引落' },
-  { id: 'other',  label: 'その他' },
+  { id: 'cash',         label: '現金',          group: 'cash',   group_label: '現金' },
+  { id: 'famima_card',  label: 'ファミマカード', group: 'credit', group_label: 'クレジットカード' },
+  { id: 'aeon_highway', label: 'イオン首都高',         group: 'credit', group_label: 'クレジットカード' },
+  { id: 'eneos_card',   label: 'ENEOSカード',          group: 'credit', group_label: 'クレジットカード' },
+  { id: 'bic_suica',    label: 'ビックカメラSuicaカード', group: 'credit', group_label: 'クレジットカード' },
+  { id: 'saison_gold',  label: 'セゾンゴールド',         group: 'credit', group_label: 'クレジットカード' },
+  { id: 'saison_pearl', label: 'セゾンパール',           group: 'credit', group_label: 'クレジットカード' },
+  { id: 'uc_card',      label: 'UCカード',               group: 'credit', group_label: 'クレジットカード' },
+  { id: 'paypay',       label: 'PayPay',         group: 'ic',     group_label: '電子マネー' },
+  { id: 'suica',        label: 'Suica',          group: 'ic',     group_label: '電子マネー' },
+  { id: 'bank',         label: '口座引落',       group: 'bank',   group_label: '口座引落' },
+  { id: 'other',        label: 'その他',         group: 'other',  group_label: 'その他' },
 ];
 
 export const EXPENSE_TYPE_LABELS = {

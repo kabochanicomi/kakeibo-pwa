@@ -28,6 +28,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
   });
   const [amount, setAmount] = useState(editTransaction?.amount ?? 0);
   const [memo, setMemo] = useState(editTransaction?.memo ?? '');
+  const [storeName, setStoreName] = useState(editTransaction?.store_name ?? '');
   const [paymentMethod, setPaymentMethod] = useState(editTransaction?.payment_method ?? null);
 
   const loadDay = useCallback(async () => {
@@ -43,6 +44,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
     setCategory(null);
     setAmount(0);
     setMemo('');
+    setStoreName('');
     setPaymentMethod(null);
     setStep('entry');
   };
@@ -54,6 +56,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
     setCategory({ id: t.category, label: t.category_label, expense_type: t.expense_type, group_label: catDef.group_label ?? null });
     setAmount(t.amount);
     setMemo(t.memo ?? '');
+    setStoreName(t.store_name ?? '');
     setPaymentMethod(t.payment_method ?? null);
     setStep('entry');
   };
@@ -76,6 +79,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
       group_label: cat.group_label ?? null,
       amount,
       payment_method: type === 'expense' ? paymentMethod : null,
+      store_name: storeName.trim(),
       memo: memo.trim(),
     };
     if (editingId) {
@@ -146,7 +150,9 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
                         onPointerDown={(e) => { e.preventDefault(); startEdit(t); }}
                       >
                         <span className="entry-day-item-cat">{t.category_label}</span>
-                        <span className="entry-day-item-memo">{t.memo}</span>
+                        <span className="entry-day-item-memo">
+                          {[t.store_name, t.memo].filter(Boolean).join(' · ')}
+                        </span>
                         <span className="entry-day-item-amount" style={{ color }}>
                           {t.type === 'income' ? '+' : '-'}¥{t.amount.toLocaleString()}
                         </span>
@@ -176,12 +182,21 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
               ¥{amount.toLocaleString()}
             </div>
 
-            {/* Memo input */}
+            {/* Store name input */}
             <input
               className="entry-memo-input"
               type="text"
+              placeholder="店名（任意）"
+              value={storeName}
+              onChange={(e) => setStoreName(e.target.value)}
+            />
+
+            {/* Memo input */}
+            <textarea
+              className="entry-memo-input entry-memo-textarea"
               placeholder="メモ（任意）"
               value={memo}
+              rows={2}
               onChange={(e) => setMemo(e.target.value)}
             />
 
