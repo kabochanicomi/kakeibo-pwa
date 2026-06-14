@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CATEGORIES, EXPENSE_TYPE_LABELS } from '../constants/categories';
 
 const EXPENSE_TYPE_ORDER = ['variable', 'fixed', 'special'];
@@ -60,6 +60,9 @@ function CategoryGrid({ type, selected, onSelect }) {
 }
 
 function Grid({ cats, selected, onSelect }) {
+  const touchStart = useRef(null);
+  const [pressedId, setPressedId] = useState(null);
+
   return (
     <div style={{
       display: 'grid',
@@ -68,10 +71,23 @@ function Grid({ cats, selected, onSelect }) {
     }}>
       {cats.map((cat) => {
         const isSelected = selected?.id === cat.id;
+        const isPressed = pressedId === cat.id;
         return (
           <button
             key={cat.id}
-            onPointerDown={(e) => { e.preventDefault(); onSelect(cat); }}
+            onPointerDown={(e) => {
+              touchStart.current = { x: e.clientX, y: e.clientY };
+              setPressedId(cat.id);
+            }}
+            onPointerUp={(e) => {
+              if (!touchStart.current) return;
+              const dx = Math.abs(e.clientX - touchStart.current.x);
+              const dy = Math.abs(e.clientY - touchStart.current.y);
+              touchStart.current = null;
+              setPressedId(null);
+              if (dx < 10 && dy < 10) onSelect(cat);
+            }}
+            onPointerCancel={() => { touchStart.current = null; setPressedId(null); }}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -83,6 +99,9 @@ function Grid({ cats, selected, onSelect }) {
               backgroundColor: isSelected ? '#fff0f5' : 'transparent',
               fontSize: '11px',
               color: isSelected ? '#ff758c' : '#555',
+              filter: isPressed ? 'brightness(0.88)' : undefined,
+              WebkitUserSelect: 'none',
+              userSelect: 'none',
             }}
           >
             <span style={{ fontSize: '22px', lineHeight: 1 }}>{cat.icon}</span>

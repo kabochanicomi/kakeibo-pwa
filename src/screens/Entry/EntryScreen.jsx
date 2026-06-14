@@ -238,7 +238,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
               ) : (
                 <button
                   className="entry-category-btn"
-                  onPointerDown={(e) => { e.preventDefault(); handleGoToCategory(); }}
+                  onPointerUp={() => handleGoToCategory()}
                 >
                   <span style={{ color: category ? '#333' : '#aaa' }}>
                     {category

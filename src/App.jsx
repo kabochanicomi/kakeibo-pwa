@@ -3,6 +3,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { initSync, initFromFirestore, syncNow } from './utils/sync';
 import { initPaymentMethods } from './utils/paymentSettings';
+import { clearAllTransactions } from './db';
 import LoginScreen from './screens/Login/LoginScreen';
 import CalendarScreen from './screens/Calendar/CalendarScreen';
 import ReportScreen from './screens/Report/ReportScreen';
@@ -20,10 +21,16 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
+        const lastUid = localStorage.getItem('kakeibo_last_uid');
+        if (lastUid && lastUid !== currentUser.uid) {
+          await clearAllTransactions();
+        }
+        localStorage.setItem('kakeibo_last_uid', currentUser.uid);
+
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
         try {
-          await initFromFirestore(); // 新端末: Firestore → IndexedDB
+          await initFromFirestore(); // 新端末 or ユーザー切替: Firestore → IndexedDB
         } catch (e) {
           console.warn('initFromFirestore failed', e);
         }
