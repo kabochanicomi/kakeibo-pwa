@@ -2,22 +2,25 @@ import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { initSync, initFromFirestore, syncNow } from './utils/sync';
+import { initPaymentMethods } from './utils/paymentSettings';
 import LoginScreen from './screens/Login/LoginScreen';
 import CalendarScreen from './screens/Calendar/CalendarScreen';
 import ReportScreen from './screens/Report/ReportScreen';
 import ImportScreen from './screens/Import/ImportScreen';
+import PaymentSettingsScreen from './screens/PaymentSettings/PaymentSettingsScreen';
 
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'import'
+  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'import' | 'paymentSettings'
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         initSync(currentUser.uid);
+        initPaymentMethods(currentUser.uid).catch(console.warn);
         try {
           await initFromFirestore(); // 新端末: Firestore → IndexedDB
         } catch (e) {
@@ -50,10 +53,13 @@ function App() {
         <ReportScreen onBack={() => setView('calendar')} />
       ) : view === 'import' ? (
         <ImportScreen onBack={() => setView('calendar')} />
+      ) : view === 'paymentSettings' ? (
+        <PaymentSettingsScreen onBack={() => setView('calendar')} />
       ) : (
         <CalendarScreen
           onOpenReport={() => setView('report')}
           onOpenImport={() => setView('import')}
+          onOpenPaymentSettings={() => setView('paymentSettings')}
         />
       )}
     </div>

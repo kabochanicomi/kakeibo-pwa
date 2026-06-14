@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { addTransaction, updateTransaction, deleteTransaction, getTransactionsByDate } from '../../db';
 import { syncNow } from '../../utils/sync';
-import { CATEGORIES, PAYMENT_METHODS } from '../../constants/categories';
+import { getPaymentMethods } from '../../utils/paymentSettings';
+import { CATEGORIES } from '../../constants/categories';
 
 const CATEGORY_MAP = {};
 CATEGORIES.income.forEach((c) => { CATEGORY_MAP[c.id] = c; });
@@ -204,7 +205,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
             {/* Payment chips (expense) → tap to advance / Category nav (income, saving) */}
             {type === 'expense' ? (
               <div className="entry-payment-row">
-                {PAYMENT_METHODS.filter((m) => m.visible).map((m) => (
+                {getPaymentMethods().filter((m) => m.visible).map((m) => (
                   <button
                     key={m.id}
                     className={`payment-chip ${paymentMethod === m.id ? 'active' : ''}`}

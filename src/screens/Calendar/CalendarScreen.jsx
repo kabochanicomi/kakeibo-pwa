@@ -26,7 +26,7 @@ function formatDayHeader(dateStr) {
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
 const TYPE_SIGN  = { income: '', expense: '', saving: '' };
 
-function CalendarScreen({ onOpenReport, onOpenImport }) {
+function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -144,6 +144,7 @@ function CalendarScreen({ onOpenReport, onOpenImport }) {
                   {[
                     { label: '📊 集計', action: () => { onOpenReport(); setMenuOpen(false); } },
                     { label: '📥 データ取り込み', action: () => { onOpenImport(); setMenuOpen(false); } },
+                    { label: '💳 支払い方法の設定', action: () => { onOpenPaymentSettings(); setMenuOpen(false); } },
                     { label: '🚪 ログアウト', action: () => { signOut(auth); setMenuOpen(false); } },
                   ].map(({ label, action }) => (
                     <button
