@@ -35,6 +35,7 @@ function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
   const [editTransaction, setEditTransaction] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const touchStartX = useRef(null);
+  const calendarWrapRef = useRef(null);
 
   const year = activeDate.getFullYear();
   const month = activeDate.getMonth() + 1;
@@ -183,16 +184,45 @@ function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
 
         {/* Calendar */}
         <div
-          style={{ flexShrink: 0, padding: '4px 8px' }}
-          onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+          style={{ flexShrink: 0, overflow: 'hidden' }}
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX;
+            if (calendarWrapRef.current) calendarWrapRef.current.style.transition = 'none';
+          }}
+          onTouchMove={(e) => {
+            if (touchStartX.current === null) return;
+            const delta = e.touches[0].clientX - touchStartX.current;
+            if (calendarWrapRef.current) calendarWrapRef.current.style.transform = `translateX(${delta}px)`;
+          }}
           onTouchEnd={(e) => {
             if (touchStartX.current === null) return;
             const delta = e.changedTouches[0].clientX - touchStartX.current;
-            if (delta < -50) setActiveDate(new Date(year, month, 1));
-            else if (delta > 50) setActiveDate(new Date(year, month - 2, 1));
             touchStartX.current = null;
+            const el = calendarWrapRef.current;
+            if (!el) return;
+            const width = window.innerWidth;
+            if (Math.abs(delta) > 50) {
+              const exitTo = delta < 0 ? -width : width;
+              const enterFrom = delta < 0 ? width : -width;
+              el.style.transition = 'transform 0.2s ease';
+              el.style.transform = `translateX(${exitTo}px)`;
+              setTimeout(() => {
+                if (delta < 0) setActiveDate(new Date(year, month, 1));
+                else setActiveDate(new Date(year, month - 2, 1));
+                el.style.transition = 'none';
+                el.style.transform = `translateX(${enterFrom}px)`;
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                  el.style.transition = 'transform 0.25s ease';
+                  el.style.transform = 'translateX(0)';
+                }));
+              }, 200);
+            } else {
+              el.style.transition = 'transform 0.2s ease';
+              el.style.transform = 'translateX(0)';
+            }
           }}
         >
+          <div ref={calendarWrapRef} style={{ padding: '4px 8px' }}>
           <Calendar
             onClickDay={(d) => setSelectedDate(toDateStr(d))}
             activeStartDate={new Date(year, month - 1, 1)}
@@ -206,10 +236,19 @@ prevLabel={null}
             tileContent={tileContent}
             tileClassName={tileClassName}
           />
+          </div>
         </div>
 
         {/* Day panel */}
-        <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderTop: '1px solid #eee' }}>
+        <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', backgroundColor: '#fff', borderTop: '1px solid #eee', position: 'relative' }}>
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            pointerEvents: 'none', zIndex: 0,
+          }}>
+            <img src="/kakeibo-pwa/icons/apple-touch-icon.png" alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.06 }} />
+          </div>
+          <div style={{ position: 'relative', zIndex: 1 }}>
           {!selectedDate ? (
             <div style={{ textAlign: 'center', color: '#ccc', padding: '24px 0', fontSize: '13px' }}>
               日付を選択してください
@@ -247,6 +286,7 @@ prevLabel={null}
               )}
             </>
           )}
+          </div>
         </div>
 
         {/* FAB */}

@@ -69,8 +69,23 @@
 }
 
 .ps-item-label {
+  background: none;
+  border: none;
   font-size: 14px;
   color: #333;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.ps-edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ff758c;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  min-width: 0;
 }
 
 .ps-item-actions {

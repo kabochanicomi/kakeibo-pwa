@@ -19,6 +19,22 @@ function PaymentSettingsScreen({ onBack }) {
   const [newLabel, setNewLabel] = useState('');
   const [newGroup, setNewGroup] = useState('other');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editingLabel, setEditingLabel] = useState('');
+
+  const startEdit = (m) => {
+    setEditingId(m.id);
+    setEditingLabel(m.label);
+  };
+
+  const commitEdit = () => {
+    const label = editingLabel.trim();
+    if (label) {
+      setMethods((prev) => prev.map((m) => m.id === editingId ? { ...m, label } : m));
+    }
+    setEditingId(null);
+    setEditingLabel('');
+  };
 
   const toggleVisible = (id) => {
     setMethods((prev) => prev.map((m) => m.id === id ? { ...m, visible: !m.visible } : m));
@@ -53,6 +69,32 @@ function PaymentSettingsScreen({ onBack }) {
     }
   };
 
+  const renderItem = (m) => (
+    <div key={m.id} className="ps-item">
+      {editingId === m.id ? (
+        <input
+          className="ps-edit-input"
+          value={editingLabel}
+          onChange={(e) => setEditingLabel(e.target.value)}
+          onBlur={commitEdit}
+          onKeyDown={(e) => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditingId(null); }}
+          autoFocus
+        />
+      ) : (
+        <button className="ps-item-label" onClick={() => startEdit(m)}>{m.label} ✎</button>
+      )}
+      <div className="ps-item-actions">
+        <button
+          className={`ps-toggle ${m.visible ? 'on' : 'off'}`}
+          onClick={() => toggleVisible(m.id)}
+        >
+          {m.visible ? '表示' : '非表示'}
+        </button>
+        <button className="ps-delete-btn" onClick={() => deleteMethod(m.id)}>🗑</button>
+      </div>
+    </div>
+  );
+
   const grouped = GROUP_OPTIONS
     .map((g) => ({ ...g, items: methods.filter((m) => m.group === g.id) }))
     .filter((g) => g.items.length > 0);
@@ -73,40 +115,14 @@ function PaymentSettingsScreen({ onBack }) {
         {grouped.map((g) => (
           <div key={g.id} className="ps-group">
             <div className="ps-group-label">{g.label}</div>
-            {g.items.map((m) => (
-              <div key={m.id} className="ps-item">
-                <span className="ps-item-label">{m.label}</span>
-                <div className="ps-item-actions">
-                  <button
-                    className={`ps-toggle ${m.visible ? 'on' : 'off'}`}
-                    onClick={() => toggleVisible(m.id)}
-                  >
-                    {m.visible ? '表示' : '非表示'}
-                  </button>
-                  <button className="ps-delete-btn" onClick={() => deleteMethod(m.id)}>🗑</button>
-                </div>
-              </div>
-            ))}
+            {g.items.map(renderItem)}
           </div>
         ))}
 
         {ungrouped.length > 0 && (
           <div className="ps-group">
             <div className="ps-group-label">その他</div>
-            {ungrouped.map((m) => (
-              <div key={m.id} className="ps-item">
-                <span className="ps-item-label">{m.label}</span>
-                <div className="ps-item-actions">
-                  <button
-                    className={`ps-toggle ${m.visible ? 'on' : 'off'}`}
-                    onClick={() => toggleVisible(m.id)}
-                  >
-                    {m.visible ? '表示' : '非表示'}
-                  </button>
-                  <button className="ps-delete-btn" onClick={() => deleteMethod(m.id)}>🗑</button>
-                </div>
-              </div>
-            ))}
+            {ungrouped.map(renderItem)}
           </div>
         )}
 
