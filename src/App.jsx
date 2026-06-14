@@ -8,13 +8,14 @@ import CalendarScreen from './screens/Calendar/CalendarScreen';
 import ReportScreen from './screens/Report/ReportScreen';
 import ImportScreen from './screens/Import/ImportScreen';
 import PaymentSettingsScreen from './screens/PaymentSettings/PaymentSettingsScreen';
+import AnnualReportScreen from './screens/AnnualReport/AnnualReportScreen';
 
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'import' | 'paymentSettings'
+  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings'
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -51,6 +52,8 @@ function App() {
         <LoginScreen />
       ) : view === 'report' ? (
         <ReportScreen onBack={() => setView('calendar')} />
+      ) : view === 'annualReport' ? (
+        <AnnualReportScreen onBack={() => setView('calendar')} />
       ) : view === 'import' ? (
         <ImportScreen onBack={() => setView('calendar')} />
       ) : view === 'paymentSettings' ? (
@@ -58,6 +61,7 @@ function App() {
       ) : (
         <CalendarScreen
           onOpenReport={() => setView('report')}
+          onOpenAnnualReport={() => setView('annualReport')}
           onOpenImport={() => setView('import')}
           onOpenPaymentSettings={() => setView('paymentSettings')}
         />

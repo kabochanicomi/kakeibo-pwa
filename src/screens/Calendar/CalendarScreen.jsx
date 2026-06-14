@@ -26,7 +26,7 @@ function formatDayHeader(dateStr) {
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
 const TYPE_SIGN  = { income: '', expense: '', saving: '' };
 
-function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
+function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -105,12 +105,13 @@ function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
         <div style={{
+          position: 'relative',
           background: 'linear-gradient(to right, #ff7eb3, #ff758c)',
           color: 'white',
           padding: '12px 16px',
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
+          justifyContent: 'center',
           boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
           flexShrink: 0,
         }}>
@@ -125,7 +126,7 @@ function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
               style={{ background: 'none', border: 'none', color: 'white', fontSize: '22px', padding: '0 4px' }}
             >›</button>
           </div>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', right: '16px' }}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               style={{ background: 'none', border: 'none', color: 'white', fontSize: '22px', padding: '4px 6px', lineHeight: 1 }}
@@ -143,7 +144,8 @@ function CalendarScreen({ onOpenReport, onOpenImport, onOpenPaymentSettings }) {
                   minWidth: '160px', zIndex: 10, overflow: 'hidden',
                 }}>
                   {[
-                    { label: '📊 集計', action: () => { onOpenReport(); setMenuOpen(false); } },
+                    { label: '📊 月次集計', action: () => { onOpenReport(); setMenuOpen(false); } },
+                    { label: '📅 年次集計', action: () => { onOpenAnnualReport(); setMenuOpen(false); } },
                     { label: '📥 データ取り込み', action: () => { onOpenImport(); setMenuOpen(false); } },
                     { label: '💳 支払い方法の設定', action: () => { onOpenPaymentSettings(); setMenuOpen(false); } },
                     { label: 'ℹ️ このアプリについて', action: () => { alert(`家計簿アプリ\nビルド日時: ${__BUILD_DATE__}`); setMenuOpen(false); } },
