@@ -34,6 +34,11 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
   const [entryDate, setEntryDate] = useState(null);
   const [editTransaction, setEditTransaction] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bgImage] = useState(() => {
+    const r = Math.random();
+    if (r < 0.25) return '/kakeibo-pwa/images/bg-accent.jpg';
+    return '/kakeibo-pwa/images/bg-main.png';
+  });
   const touchStartX = useRef(null);
   const calendarWrapRef = useRef(null);
 
@@ -248,7 +253,7 @@ prevLabel={null}
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             pointerEvents: 'none', zIndex: 0,
           }}>
-            <img src="/kakeibo-pwa/icons/apple-touch-icon.png" alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.11 }} />
+            <img src={bgImage} alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.11 }} />
           </div>
           <div style={{ position: 'relative', zIndex: 1 }}>
           {!selectedDate ? (

@@ -30,7 +30,11 @@ function App() {
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
         try {
-          await initFromFirestore(); // 新端末 or ユーザー切替: Firestore → IndexedDB
+          // 電波が弱い環境でも最大4秒でアプリを表示する
+          await Promise.race([
+            initFromFirestore(),
+            new Promise((resolve) => setTimeout(resolve, 4000)),
+          ]);
         } catch (e) {
           console.warn('initFromFirestore failed', e);
         }
