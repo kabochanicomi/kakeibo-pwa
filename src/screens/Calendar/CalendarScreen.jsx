@@ -253,7 +253,7 @@ prevLabel={null}
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             pointerEvents: 'none', zIndex: 0,
           }}>
-            <img src={bgImage} alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.11 }} />
+            <img src={bgImage} alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.5 }} />
           </div>
           <div style={{ position: 'relative', zIndex: 1 }}>
           {!selectedDate ? (
