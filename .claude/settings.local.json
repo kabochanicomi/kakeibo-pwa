@@ -12,7 +12,9 @@
       "Bash(npm install *)",
       "Bash(xargs cat)",
       "Bash(sips -z 192 192 /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/apple-touch-icon.png --out /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/icon-192.png)",
-      "Bash(sips -z 512 512 /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/apple-touch-icon.png --out /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/icon-512.png)"
+      "Bash(sips -z 512 512 /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/apple-touch-icon.png --out /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/icon-512.png)",
+      "Bash(find /Users/work/Documents/KakeiboApp -name \"firestore.rules\" 2>/dev/null; ls /Users/work/Documents/KakeiboApp/kakeibo-pwa/)",
+      "Read(//Users/work/Documents/KakeiboApp/**)"
     ]
   }
 }

@@ -49,12 +49,23 @@
   margin-bottom: 20px;
 }
 
+.ps-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+
 .ps-group-label {
   font-size: 11px;
   color: #aaa;
   font-weight: bold;
-  margin-bottom: 6px;
-  padding-left: 4px;
+}
+
+.ps-group-reorder {
+  display: flex;
+  gap: 4px;
 }
 
 .ps-item {

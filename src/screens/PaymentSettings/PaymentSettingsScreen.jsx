@@ -45,6 +45,22 @@ function PaymentSettingsScreen({ onBack }) {
     setMethods((prev) => prev.filter((m) => m.id !== id));
   };
 
+  const moveGroup = (gid, dir) => {
+    setMethods((prev) => {
+      const order = [];
+      prev.forEach((m) => { if (!order.includes(m.group)) order.push(m.group); });
+      const idx = order.indexOf(gid);
+      const targetIdx = idx + dir;
+      if (targetIdx < 0 || targetIdx >= order.length) return prev;
+      const byGroup = {};
+      order.forEach((g) => { byGroup[g] = []; });
+      prev.forEach((m) => { byGroup[m.group].push(m); });
+      const newOrder = [...order];
+      [newOrder[idx], newOrder[targetIdx]] = [newOrder[targetIdx], newOrder[idx]];
+      return newOrder.flatMap((g) => byGroup[g]);
+    });
+  };
+
   const moveInGroup = (id, dir) => {
     setMethods((prev) => {
       const group = prev.find((m) => m.id === id)?.group;
@@ -114,11 +130,17 @@ function PaymentSettingsScreen({ onBack }) {
     </div>
   );
 
-  const grouped = GROUP_OPTIONS
-    .map((g) => ({ ...g, items: methods.filter((m) => m.group === g.id) }))
-    .filter((g) => g.items.length > 0);
+  const seenGroups = [];
+  methods.forEach((m) => { if (!seenGroups.includes(m.group)) seenGroups.push(m.group); });
+  const grouped = seenGroups
+    .map((gid) => {
+      const gDef = GROUP_OPTIONS.find((g) => g.id === gid);
+      return gDef ? { ...gDef, items: methods.filter((m) => m.group === gid) } : null;
+    })
+    .filter(Boolean);
 
-  const ungrouped = methods.filter((m) => !GROUP_LABEL[m.group]);
+  const knownGroupIds = new Set(GROUP_OPTIONS.map((g) => g.id));
+  const ungrouped = methods.filter((m) => !knownGroupIds.has(m.group));
 
   return (
     <div className="ps-screen">
@@ -131,9 +153,15 @@ function PaymentSettingsScreen({ onBack }) {
       </div>
 
       <div className="ps-body">
-        {grouped.map((g) => (
+        {grouped.map((g, gi) => (
           <div key={g.id} className="ps-group">
-            <div className="ps-group-label">{g.label}</div>
+            <div className="ps-group-header">
+              <span className="ps-group-label">{g.label}</span>
+              <div className="ps-group-reorder">
+                <button className="ps-move-btn" onClick={() => moveGroup(g.id, -1)} disabled={gi === 0}>▲</button>
+                <button className="ps-move-btn" onClick={() => moveGroup(g.id, 1)} disabled={gi === grouped.length - 1}>▼</button>
+              </div>
+            </div>
             {g.items.map((m, i) => renderItem(m, i === 0, i === g.items.length - 1))}
           </div>
         ))}
