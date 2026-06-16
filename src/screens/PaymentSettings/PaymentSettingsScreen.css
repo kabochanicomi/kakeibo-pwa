@@ -60,12 +60,35 @@
 .ps-item {
   display: flex;
   align-items: center;
+  gap: 6px;
   justify-content: space-between;
   padding: 12px 14px;
   background: white;
   border-radius: 10px;
   margin-bottom: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.ps-reorder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.ps-move-btn {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 1px 4px;
+  line-height: 1;
+}
+
+.ps-move-btn:disabled {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .ps-item-label {

@@ -45,6 +45,21 @@ function PaymentSettingsScreen({ onBack }) {
     setMethods((prev) => prev.filter((m) => m.id !== id));
   };
 
+  const moveInGroup = (id, dir) => {
+    setMethods((prev) => {
+      const group = prev.find((m) => m.id === id)?.group;
+      const groupItems = prev.filter((m) => m.group === group);
+      const idx = groupItems.findIndex((m) => m.id === id);
+      const targetIdx = idx + dir;
+      if (targetIdx < 0 || targetIdx >= groupItems.length) return prev;
+      const result = [...prev];
+      const flatA = result.findIndex((m) => m.id === groupItems[idx].id);
+      const flatB = result.findIndex((m) => m.id === groupItems[targetIdx].id);
+      [result[flatA], result[flatB]] = [result[flatB], result[flatA]];
+      return result;
+    });
+  };
+
   const addMethod = () => {
     const label = newLabel.trim();
     if (!label) return;
@@ -69,8 +84,12 @@ function PaymentSettingsScreen({ onBack }) {
     }
   };
 
-  const renderItem = (m) => (
+  const renderItem = (m, isFirst, isLast) => (
     <div key={m.id} className="ps-item">
+      <div className="ps-reorder">
+        <button className="ps-move-btn" onClick={() => moveInGroup(m.id, -1)} disabled={isFirst}>▲</button>
+        <button className="ps-move-btn" onClick={() => moveInGroup(m.id, 1)} disabled={isLast}>▼</button>
+      </div>
       {editingId === m.id ? (
         <input
           className="ps-edit-input"
@@ -115,14 +134,14 @@ function PaymentSettingsScreen({ onBack }) {
         {grouped.map((g) => (
           <div key={g.id} className="ps-group">
             <div className="ps-group-label">{g.label}</div>
-            {g.items.map(renderItem)}
+            {g.items.map((m, i) => renderItem(m, i === 0, i === g.items.length - 1))}
           </div>
         ))}
 
         {ungrouped.length > 0 && (
           <div className="ps-group">
             <div className="ps-group-label">その他</div>
-            {ungrouped.map(renderItem)}
+            {ungrouped.map((m, i) => renderItem(m, i === 0, i === ungrouped.length - 1))}
           </div>
         )}
 

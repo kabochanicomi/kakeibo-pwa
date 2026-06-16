@@ -19,26 +19,17 @@ function App() {
   const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings'
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         const lastUid = localStorage.getItem('kakeibo_last_uid');
         if (lastUid && lastUid !== currentUser.uid) {
-          await clearAllTransactions();
+          clearAllTransactions().catch(console.warn); // ユーザー切替時のみ・バックグラウンド
         }
         localStorage.setItem('kakeibo_last_uid', currentUser.uid);
-
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
-        try {
-          // 電波が弱い環境でも最大4秒でアプリを表示する
-          await Promise.race([
-            initFromFirestore(),
-            new Promise((resolve) => setTimeout(resolve, 4000)),
-          ]);
-        } catch (e) {
-          console.warn('initFromFirestore failed', e);
-        }
-        syncNow().catch(console.warn); // 未同期レコードをプッシュ（非同期）
+        initFromFirestore().catch(console.warn);
+        syncNow().catch(console.warn);
       }
       setUser(currentUser);
       setLoading(false);
