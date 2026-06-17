@@ -9,6 +9,7 @@ import CalendarScreen from './screens/Calendar/CalendarScreen';
 import ReportScreen from './screens/Report/ReportScreen';
 import ImportScreen from './screens/Import/ImportScreen';
 import PaymentSettingsScreen from './screens/PaymentSettings/PaymentSettingsScreen';
+import ExportScreen from './screens/Export/ExportScreen';
 import AnnualReportScreen from './screens/AnnualReport/AnnualReportScreen';
 
 import './App.css';
@@ -16,22 +17,32 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings'
+  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings' | 'export'
 
   useEffect(() => {
+    // 前回ログイン済みなら即カレンダーを表示し、認証・同期はバックグラウンドで行う
+    const lastUid = localStorage.getItem('kakeibo_last_uid');
+    if (lastUid) {
+      initSync(lastUid);
+      setUser({ uid: lastUid });
+      setLoading(false);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        const lastUid = localStorage.getItem('kakeibo_last_uid');
         if (lastUid && lastUid !== currentUser.uid) {
-          clearAllTransactions().catch(console.warn); // ユーザー切替時のみ・バックグラウンド
+          clearAllTransactions().catch(console.warn);
         }
         localStorage.setItem('kakeibo_last_uid', currentUser.uid);
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
         initFromFirestore().catch(console.warn);
         syncNow().catch(console.warn);
+        setUser(currentUser);
+      } else {
+        localStorage.removeItem('kakeibo_last_uid');
+        setUser(null);
       }
-      setUser(currentUser);
       setLoading(false);
     });
 
@@ -60,12 +71,15 @@ function App() {
         <ImportScreen onBack={() => setView('calendar')} />
       ) : view === 'paymentSettings' ? (
         <PaymentSettingsScreen onBack={() => setView('calendar')} />
+      ) : view === 'export' ? (
+        <ExportScreen onBack={() => setView('calendar')} />
       ) : (
         <CalendarScreen
           onOpenReport={() => setView('report')}
           onOpenAnnualReport={() => setView('annualReport')}
           onOpenImport={() => setView('import')}
           onOpenPaymentSettings={() => setView('paymentSettings')}
+          onOpenExport={() => setView('export')}
         />
       )}
     </div>

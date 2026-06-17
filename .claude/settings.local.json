@@ -1,20 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat \"{}\"')",
-      "Bash(npm run *)",
-      "Bash(git -C /Users/work/Documents/KakeiboApp/kakeibo-pwa remote -v)",
-      "Bash(git remote *)",
-      "Bash(sips -s format png IMG_7522.JPG --out public/icons/icon-512.png)",
-      "Bash(sips -z 512 512 public/icons/icon-512.png)",
-      "Bash(sips -z 192 192 public/icons/icon-512.png --out public/icons/icon-192.png)",
-      "Bash(sips -z 180 180 public/icons/icon-512.png --out public/icons/apple-touch-icon.png)",
-      "Bash(npm install *)",
-      "Bash(xargs cat)",
-      "Bash(sips -z 192 192 /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/apple-touch-icon.png --out /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/icon-192.png)",
-      "Bash(sips -z 512 512 /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/apple-touch-icon.png --out /Users/work/Documents/KakeiboApp/kakeibo-pwa/public/icons/icon-512.png)",
-      "Bash(find /Users/work/Documents/KakeiboApp -name \"firestore.rules\" 2>/dev/null; ls /Users/work/Documents/KakeiboApp/kakeibo-pwa/)",
-      "Read(//Users/work/Documents/KakeiboApp/**)"
+      "Read(/Users/work/Documents/KakeiboApp/**)",
+      "Write(/Users/work/Documents/KakeiboApp/**)",
+      "Edit(/Users/work/Documents/KakeiboApp/**)",
+      "Glob(/Users/work/Documents/KakeiboApp/**)",
+      "Grep(/Users/work/Documents/KakeiboApp/**)",
+      "PowerShell(*)",
+      "Read(/Users/work/Documents/**)"
+    ],
+    "additionalDirectories": [
+      "c/Users/work/Documents/KakeiboApp"
     ]
   }
 }
