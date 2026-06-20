@@ -146,44 +146,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
 
         {step === 'entry' ? (
           <>
-            {/* This day's existing entries */}
-            {dayTransactions.length > 0 && (
-              <div className="entry-day-list">
-                {dayTransactions.map((t) => {
-                  const color = TYPE_CONFIG.find((c) => c.key === t.type)?.color ?? '#333';
-                  return (
-                    <div key={t.id} className={`entry-day-item ${editingId === t.id ? 'editing' : ''}`}>
-                      <button
-                        className="entry-day-item-main"
-                        onPointerDown={(e) => { e.preventDefault(); startEdit(t); }}
-                      >
-                        <span className="entry-day-item-cat">{t.category_label}</span>
-                        <span className="entry-day-item-memo">
-                          {[t.store_name, t.memo].filter(Boolean).join(' · ')}
-                        </span>
-                        <span className="entry-day-item-amount" style={{ color }}>
-                          ¥{t.amount.toLocaleString()}
-                        </span>
-                      </button>
-                      <button
-                        className="entry-day-item-delete"
-                        onPointerDown={(e) => { e.preventDefault(); handleDelete(t.id); }}
-                      >
-                        🗑
-                      </button>
-                    </div>
-                  );
-                })}
-                {editingId && (
-                  <button
-                    className="entry-day-new-btn"
-                    onPointerDown={(e) => { e.preventDefault(); resetForm(); }}
-                  >
-                    ＋ 新規登録に戻る
-                  </button>
-                )}
-              </div>
-            )}
+            {/* Day history removed — editing/deleting is done from the calendar day panel */}
 
             {/* Scrollable middle: amount + inputs + payment — keeps Calculator pinned at bottom */}
             <div className="entry-scroll-area">
