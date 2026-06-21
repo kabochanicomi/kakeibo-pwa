@@ -285,8 +285,8 @@ prevLabel={null}
                     onClick={() => openEntry(selectedDate, t)}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
-                      padding: '14px 16px', background: 'none', border: 'none',
-                      borderBottom: '1px solid #f9f9f9', textAlign: 'left', cursor: 'pointer',
+                      padding: '14px 16px', background: 'rgba(255,255,255,0.92)', border: 'none',
+                      borderBottom: '1px solid #f0f0f0', textAlign: 'left', cursor: 'pointer',
                       lineHeight: '1.4',
                     }}
                   >
