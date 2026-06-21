@@ -150,12 +150,31 @@
   margin: 0 auto 12px;
 }
 
+.fe-sheet-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
 .fe-sheet-title {
   font-size: 17px;
   font-weight: bold;
   color: #333;
-  margin: 0 0 16px;
-  text-align: center;
+  margin: 0;
+}
+
+.fe-sheet-close {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #aaa;
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
 }
 
 .fe-form {

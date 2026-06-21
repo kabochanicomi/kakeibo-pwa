@@ -101,7 +101,10 @@ function TemplateForm({ initial, onSave, onDelete, onCancel }) {
     <div className="fe-sheet-overlay" onClick={onCancel}>
       <div className="fe-sheet" onClick={(e) => e.stopPropagation()}>
         <div className="fe-sheet-handle" />
-        <h2 className="fe-sheet-title">{isEdit ? '固定費を編集' : '固定費を追加'}</h2>
+        <div className="fe-sheet-header">
+          <h2 className="fe-sheet-title">{isEdit ? '固定費を編集' : '固定費を追加'}</h2>
+          <button type="button" className="fe-sheet-close" onClick={onCancel}>✕</button>
+        </div>
         <form onSubmit={handleSubmit} className="fe-form">
 
           <label className="fe-label">項目名</label>
