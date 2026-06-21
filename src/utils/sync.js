@@ -5,6 +5,8 @@ import { firestore } from '../firebase';
 import {
   getAllTransactions, getUnsyncedTransactions, markSynced,
   getPendingDeletes, clearPendingDelete, bulkSetFromFirestore,
+  getUnsyncedFixedTemplates, markFixedTemplateSynced,
+  getAllFixedTemplates, bulkSetFixedTemplatesFromFirestore,
 } from '../db';
 
 let _uid = null;
@@ -26,6 +28,7 @@ export async function syncNow() {
   if (!_uid || !navigator.onLine) return;
   await _pushUnsynced();
   await _processPendingDeletes();
+  await _pushUnsyncedTemplates();
 }
 
 // ログイン時: Firestore にあってローカルにないレコードを取り込む
@@ -69,6 +72,39 @@ async function _pushUnsynced() {
       await markSynced(localId, ref.id);
     } catch (e) {
       console.warn('sync push failed', record.id, e);
+    }
+  }
+}
+
+// ログイン時: Firestore にあってローカルにないテンプレートを取り込む
+export async function initFixedTemplatesFromFirestore() {
+  if (!_uid || !navigator.onLine) return;
+  try {
+    const col = collection(firestore, 'users', _uid, 'fixed_templates');
+    const snap = await getDocs(col);
+    if (snap.empty) return;
+    const all = await getAllFixedTemplates();
+    const localIds = new Set(all.map((t) => t.firestoreId).filter(Boolean));
+    const newTemplates = snap.docs
+      .filter((d) => !localIds.has(d.id))
+      .map((d) => ({ firestoreId: d.id, synced: true, ...d.data() }));
+    if (newTemplates.length > 0) await bulkSetFixedTemplatesFromFirestore(newTemplates);
+  } catch (e) {
+    console.warn('initFixedTemplatesFromFirestore failed', e);
+  }
+}
+
+async function _pushUnsyncedTemplates() {
+  const unsynced = await getUnsyncedFixedTemplates();
+  for (const template of unsynced) {
+    try {
+      const { id: localId, firestoreId, synced, ...data } = template;
+      const col = collection(firestore, 'users', _uid, 'fixed_templates');
+      const ref = firestoreId ? doc(firestore, 'users', _uid, 'fixed_templates', firestoreId) : doc(col);
+      await setDoc(ref, data);
+      await markFixedTemplateSynced(localId, ref.id);
+    } catch (e) {
+      console.warn('template sync push failed', template.id, e);
     }
   }
 }

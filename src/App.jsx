@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { initSync, initFromFirestore, syncNow } from './utils/sync';
+import { initSync, initFromFirestore, syncNow, initFixedTemplatesFromFirestore } from './utils/sync';
 import { initPaymentMethods } from './utils/paymentSettings';
 import { clearAllTransactions } from './db';
 import LoginScreen from './screens/Login/LoginScreen';
@@ -11,13 +11,14 @@ import ImportScreen from './screens/Import/ImportScreen';
 import PaymentSettingsScreen from './screens/PaymentSettings/PaymentSettingsScreen';
 import ExportScreen from './screens/Export/ExportScreen';
 import AnnualReportScreen from './screens/AnnualReport/AnnualReportScreen';
+import FixedExpensesScreen from './screens/FixedExpenses/FixedExpensesScreen';
 
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings' | 'export'
+  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings' | 'export' | 'fixedExpenses'
 
   useEffect(() => {
     // 前回ログイン済みなら即カレンダーを表示し、認証・同期はバックグラウンドで行う
@@ -37,6 +38,7 @@ function App() {
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
         initFromFirestore().catch(console.warn);
+        initFixedTemplatesFromFirestore().catch(console.warn);
         syncNow().catch(console.warn);
         setUser(currentUser);
       } else {
@@ -73,6 +75,8 @@ function App() {
         <PaymentSettingsScreen onBack={() => setView('calendar')} />
       ) : view === 'export' ? (
         <ExportScreen onBack={() => setView('calendar')} />
+      ) : view === 'fixedExpenses' ? (
+        <FixedExpensesScreen onBack={() => setView('calendar')} />
       ) : (
         <CalendarScreen
           onOpenReport={() => setView('report')}
@@ -80,6 +84,7 @@ function App() {
           onOpenImport={() => setView('import')}
           onOpenPaymentSettings={() => setView('paymentSettings')}
           onOpenExport={() => setView('export')}
+          onOpenFixedExpenses={() => setView('fixedExpenses')}
         />
       )}
     </div>

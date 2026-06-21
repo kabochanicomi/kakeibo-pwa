@@ -5,6 +5,8 @@ import './CalendarScreen.css';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { getTransactionsByMonth, getTransactionsByDate } from '../../db';
+import { generateFixedExpensesForMonth } from '../../utils/fixedExpenses';
+import { syncNow } from '../../utils/sync';
 import EntryScreen from '../Entry/EntryScreen';
 
 function toDateStr(d) {
@@ -26,7 +28,7 @@ function formatDayHeader(dateStr) {
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
 const TYPE_SIGN  = { income: '', expense: '', saving: '' };
 
-function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings, onOpenExport }) {
+function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings, onOpenExport, onOpenFixedExpenses }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -46,8 +48,10 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
   const month = activeDate.getMonth() + 1;
 
   const loadTransactions = useCallback(async () => {
+    const generated = await generateFixedExpensesForMonth(year, month);
     const data = await getTransactionsByMonth(year, month);
     setTransactions(data);
+    if (generated > 0) syncNow().catch(console.warn);
   }, [year, month]);
 
   const loadDay = useCallback(async () => {
@@ -151,6 +155,7 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
                   {[
                     { label: '📊 月次集計', action: () => { onOpenReport(); setMenuOpen(false); } },
                     { label: '📅 年次集計', action: () => { onOpenAnnualReport(); setMenuOpen(false); } },
+                    { label: '🔁 固定費の管理', action: () => { onOpenFixedExpenses(); setMenuOpen(false); } },
                     { label: '💳 支払い方法の設定', action: () => { onOpenPaymentSettings(); setMenuOpen(false); } },
                     { label: '📥 インポート', action: () => { onOpenImport(); setMenuOpen(false); } },
                     { label: '📤 エクスポート', action: () => { onOpenExport(); setMenuOpen(false); } },
