@@ -124,6 +124,25 @@ export async function clearAllTransactions() {
   });
 }
 
+export async function deleteTransactionsWhere(predicate) {
+  const db = await openDB();
+  const all = await new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  const targets = all.filter(predicate);
+  if (targets.length === 0) return 0;
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    for (const r of targets) store.delete(r.id);
+    tx.oncomplete = () => resolve(targets.length);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
 export async function getAllTransactions() {
   const db = await openDB();
   return new Promise((resolve, reject) => {

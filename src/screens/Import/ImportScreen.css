@@ -300,6 +300,39 @@
   opacity: 0.7;
 }
 
+.import-summary-dup {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: opacity 0.15s;
+  background: #f0f4ff;
+  color: #3a5bc7;
+  border: 1px solid #c5d0f7;
+}
+
+.import-summary-dup.active {
+  background: #dce4ff;
+  border-color: #7b92ff;
+}
+
+.import-section-dup {
+  border-color: #c5d0f7;
+}
+
+.import-section-dup .import-section-label {
+  background: #f0f4ff;
+  color: #3a5bc7;
+  border-bottom-color: #c5d0f7;
+}
+
 .import-section {
   background: #fff;
   border-radius: 14px;
@@ -349,5 +382,56 @@
 .import-td-amount {
   text-align: right;
   white-space: nowrap;
+}
+
+.import-format-heading {
+  margin: 0 0 4px;
+  font-size: 11px;
+  color: #aaa;
+  font-weight: bold;
+  padding-left: 4px;
+}
+
+.import-format-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px;
+  background: white;
+  border: none;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  text-align: left;
+}
+
+.import-format-btn:active {
+  background: #fafafa;
+}
+
+.import-format-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.import-format-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.import-format-desc {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.import-format-arrow {
+  margin-left: auto;
+  font-size: 18px;
+  color: #ccc;
+  flex-shrink: 0;
 }
 
