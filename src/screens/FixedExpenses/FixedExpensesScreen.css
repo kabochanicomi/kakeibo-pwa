@@ -232,16 +232,20 @@
   font-weight: bold;
 }
 
-.fe-row {
+.fe-end-date-row {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
-.fe-col {
-  flex: 1;
+.fe-toggle-label {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
 }
 
 .fe-form-actions {

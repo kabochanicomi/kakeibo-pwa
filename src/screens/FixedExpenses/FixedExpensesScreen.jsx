@@ -43,6 +43,9 @@ function emptyForm() {
 
 function TemplateForm({ initial, onSave, onDelete, onCancel }) {
   const [form, setForm] = useState(initial ?? emptyForm());
+  const [hasEndDate, setHasEndDate] = useState(
+    !!initial && initial.end_date !== '9999-12-31'
+  );
   const isEdit = !!initial;
 
   const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
@@ -182,27 +185,37 @@ function TemplateForm({ initial, onSave, onDelete, onCancel }) {
             onChange={(e) => set('day', e.target.value)}
           />
 
-          <div className="fe-row">
-            <div className="fe-col">
-              <label className="fe-label">開始日</label>
+          <label className="fe-label">開始日</label>
+          <input
+            className="fe-input"
+            type="date"
+            value={form.start_date}
+            onChange={(e) => set('start_date', e.target.value)}
+          />
+
+          <div className="fe-end-date-row">
+            <label className="fe-label" style={{ margin: 0 }}>終了日</label>
+            <label className="fe-toggle-label">
               <input
-                className="fe-input"
-                type="date"
-                value={form.start_date}
-                onChange={(e) => set('start_date', e.target.value)}
+                type="checkbox"
+                checked={hasEndDate}
+                onChange={(e) => {
+                  setHasEndDate(e.target.checked);
+                  if (!e.target.checked) set('end_date', '9999-12-31');
+                  else set('end_date', TODAY);
+                }}
               />
-            </div>
-            <div className="fe-col">
-              <label className="fe-label">終了日</label>
-              <input
-                className="fe-input"
-                type="date"
-                value={form.end_date === '9999-12-31' ? '' : form.end_date}
-                placeholder="未定"
-                onChange={(e) => set('end_date', e.target.value || '9999-12-31')}
-              />
-            </div>
+              <span>終了日あり</span>
+            </label>
           </div>
+          {hasEndDate && (
+            <input
+              className="fe-input"
+              type="date"
+              value={form.end_date}
+              onChange={(e) => set('end_date', e.target.value || '9999-12-31')}
+            />
+          )}
 
           <label className="fe-label">メモ</label>
           <input
