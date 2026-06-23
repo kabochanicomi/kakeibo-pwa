@@ -127,7 +127,14 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
             const dow = ['日','月','火','水','木','金','土'][new Date(y, m - 1, d).getDay()];
             return `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}（${dow}）`;
           })()}</span>
-          <div style={{ width: 30 }} />
+          {editingId ? (
+            <button
+              className="entry-delete-btn"
+              onPointerDown={(e) => { e.preventDefault(); handleDelete(editingId); }}
+            >🗑</button>
+          ) : (
+            <div style={{ width: 30 }} />
+          )}
         </div>
 
         {/* Type tabs - always visible */}
