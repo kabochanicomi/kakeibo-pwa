@@ -68,9 +68,8 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
   const handleDelete = async (id) => {
     if (!window.confirm('この記録を削除しますか？')) return;
     await deleteTransaction(id);
-    if (editingId === id) resetForm();
-    await loadDay();
     onSaved();
+    onClose();
     syncNow().catch(console.warn);
   };
 

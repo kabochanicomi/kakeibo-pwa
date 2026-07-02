@@ -8,8 +8,8 @@ function toYen(n) {
 }
 
 const CAT_GROUPS = [
-  { label: '固定費', bg: '#edf4ff', cats: CATEGORIES.expense.fixed },
   { label: '変動費', bg: '#fff7ed', cats: CATEGORIES.expense.variable },
+  { label: '固定費', bg: '#edf4ff', cats: CATEGORIES.expense.fixed },
   { label: '特別費', bg: '#f5f0ff', cats: CATEGORIES.expense.special },
 ];
 const FLAT_CATS = CAT_GROUPS.flatMap((g) => g.cats.map((c) => ({ ...c, groupBg: g.bg })));
