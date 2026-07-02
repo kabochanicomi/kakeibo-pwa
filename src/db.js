@@ -162,6 +162,23 @@ export async function getUnsyncedTransactions() {
   return all.filter((r) => !r.synced);
 }
 
+export async function saveTransactionFirestoreId(localId, firestoreId) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const getReq = store.get(localId);
+    getReq.onsuccess = () => {
+      const record = getReq.result;
+      if (!record) { resolve(); return; }
+      store.put({ ...record, firestoreId });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    };
+    getReq.onerror = () => reject(getReq.error);
+  });
+}
+
 export async function markSynced(localId, firestoreId) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
@@ -255,6 +272,23 @@ export async function deleteFixedTemplate(id) {
 export async function getUnsyncedFixedTemplates() {
   const all = await getAllFixedTemplates();
   return all.filter((t) => !t.synced);
+}
+
+export async function saveTemplateFirestoreId(localId, firestoreId) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(TEMPLATES_STORE, 'readwrite');
+    const store = tx.objectStore(TEMPLATES_STORE);
+    const getReq = store.get(localId);
+    getReq.onsuccess = () => {
+      const record = getReq.result;
+      if (!record) { resolve(); return; }
+      store.put({ ...record, firestoreId });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    };
+    getReq.onerror = () => reject(getReq.error);
+  });
 }
 
 export async function markFixedTemplateSynced(localId, firestoreId) {

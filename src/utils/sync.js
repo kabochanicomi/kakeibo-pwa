@@ -3,9 +3,9 @@ import {
 } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import {
-  getAllTransactions, getUnsyncedTransactions, markSynced,
+  getAllTransactions, getUnsyncedTransactions, markSynced, saveTransactionFirestoreId,
   getPendingDeletes, clearPendingDelete, bulkSetFromFirestore,
-  getUnsyncedFixedTemplates, markFixedTemplateSynced,
+  getUnsyncedFixedTemplates, markFixedTemplateSynced, saveTemplateFirestoreId,
   getAllFixedTemplates, bulkSetFixedTemplatesFromFirestore,
 } from '../db';
 
@@ -68,6 +68,9 @@ async function _pushUnsynced() {
     try {
       const { id: localId, firestoreId, synced, ...data } = record;
       const ref = firestoreId ? txDoc(firestoreId) : doc(txCol());
+      // FirestoreIDをsetDocの前に保存しておく → ネットワーク障害で応答が来なくても
+      // 次回リトライ時に同じIDでsetDocするため冪等になり重複を防ぐ
+      if (!firestoreId) await saveTransactionFirestoreId(localId, ref.id);
       await setDoc(ref, data);
       await markSynced(localId, ref.id);
     } catch (e) {
@@ -101,6 +104,7 @@ async function _pushUnsyncedTemplates() {
       const { id: localId, firestoreId, synced, ...data } = template;
       const col = collection(firestore, 'users', _uid, 'fixed_templates');
       const ref = firestoreId ? doc(firestore, 'users', _uid, 'fixed_templates', firestoreId) : doc(col);
+      if (!firestoreId) await saveTemplateFirestoreId(localId, ref.id);
       await setDoc(ref, data);
       await markFixedTemplateSynced(localId, ref.id);
     } catch (e) {
