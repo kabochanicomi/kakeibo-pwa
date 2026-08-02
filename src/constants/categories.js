@@ -12,6 +12,7 @@ export const CATEGORIES = {
       { id: 'insurance',     label: '保険料',   icon: '🛡️', group_label: '保険料' },
       { id: 'loan',          label: 'ローン',   icon: '🏦', group_label: 'ローン' },
       { id: 'subscription',  label: 'サブスク', icon: '📺', group_label: 'サブスク' },
+      { id: 'utilities',     label: '水道光熱費', icon: '💡', group_label: '水道光熱費' },
     ],
     variable: [
       { id: 'food_morning',  label: '食費（朝食）',   icon: '🍳', group_label: '食費' },
