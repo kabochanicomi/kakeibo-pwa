@@ -303,6 +303,24 @@ prevLabel={null}
           </div>
         </div>
 
+        {/* Today button */}
+        <button
+          onClick={() => {
+            const today = new Date();
+            setActiveDate(today);
+            setSelectedDate(toDateStr(today));
+          }}
+          style={{
+            position: 'fixed', left: '20px', bottom: '30px',
+            width: '60px', height: '60px', borderRadius: '30px',
+            backgroundColor: '#fff', color: '#ff758c', fontSize: '12px',
+            fontWeight: 'bold',
+            border: '2px solid #ff758c', boxShadow: '0 4px 12px rgba(255,117,140,0.3)',
+            display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 10,
+            cursor: 'pointer',
+          }}
+        >今日</button>
+
         {/* FAB */}
         <button
           onClick={handlePlusClick}
