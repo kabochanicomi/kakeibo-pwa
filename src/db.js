@@ -342,13 +342,11 @@ export async function deduplicateFixedExpenseTransactions() {
     }
   }
   if (toDelete.length === 0) return 0;
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    const store = tx.objectStore(STORE);
-    for (const id of toDelete) store.delete(id);
-    tx.oncomplete = () => resolve(toDelete.length);
-    tx.onerror = () => reject(tx.error);
-  });
+  // deleteTransaction経由で削除することでFirestore側もpending_deletesに積む
+  for (const id of toDelete) {
+    await deleteTransaction(id);
+  }
+  return toDelete.length;
 }
 
 export async function bulkSetFromFirestore(records) {

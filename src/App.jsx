@@ -38,14 +38,16 @@ function App() {
         localStorage.setItem('kakeibo_last_uid', currentUser.uid);
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
+        syncNow().catch(console.warn);
         Promise.all([
           initFromFirestore(),
           initFixedTemplatesFromFirestore(),
-        ]).finally(() => {
-          deduplicateFixedExpenseTransactions().catch(console.warn);
+        ]).then(async () => {
+          const removed = await deduplicateFixedExpenseTransactions();
+          if (removed > 0) await syncNow(); // Firestore側の重複も削除
+        }).finally(() => {
           setSyncReady(true);
         });
-        syncNow().catch(console.warn);
         setUser(currentUser);
       } else {
         localStorage.removeItem('kakeibo_last_uid');
