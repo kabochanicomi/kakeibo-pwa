@@ -322,6 +322,35 @@ export async function bulkSetFixedTemplatesFromFirestore(templates) {
   });
 }
 
+export async function deduplicateFixedExpenseTransactions() {
+  const db = await openDB();
+  const all = await new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  const seen = new Map();
+  const toDelete = [];
+  for (const r of all) {
+    if (!r.fixed_template_id) continue;
+    const key = `${r.fixed_template_id}|${r.date}`;
+    if (seen.has(key)) {
+      toDelete.push(r.id);
+    } else {
+      seen.set(key, r.id);
+    }
+  }
+  if (toDelete.length === 0) return 0;
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    for (const id of toDelete) store.delete(id);
+    tx.oncomplete = () => resolve(toDelete.length);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
 export async function bulkSetFromFirestore(records) {
   const db = await openDB();
   return new Promise((resolve, reject) => {

@@ -3,7 +3,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { initSync, initFromFirestore, syncNow, initFixedTemplatesFromFirestore } from './utils/sync';
 import { initPaymentMethods } from './utils/paymentSettings';
-import { clearAllTransactions } from './db';
+import { clearAllTransactions, deduplicateFixedExpenseTransactions } from './db';
 import LoginScreen from './screens/Login/LoginScreen';
 import CalendarScreen from './screens/Calendar/CalendarScreen';
 import ReportScreen from './screens/Report/ReportScreen';
@@ -18,6 +18,7 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [syncReady, setSyncReady] = useState(false);
   const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings' | 'export' | 'fixedExpenses'
 
   useEffect(() => {
@@ -37,8 +38,13 @@ function App() {
         localStorage.setItem('kakeibo_last_uid', currentUser.uid);
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
-        initFromFirestore().catch(console.warn);
-        initFixedTemplatesFromFirestore().catch(console.warn);
+        Promise.all([
+          initFromFirestore(),
+          initFixedTemplatesFromFirestore(),
+        ]).finally(() => {
+          deduplicateFixedExpenseTransactions().catch(console.warn);
+          setSyncReady(true);
+        });
         syncNow().catch(console.warn);
         setUser(currentUser);
       } else {
@@ -85,6 +91,7 @@ function App() {
           onOpenPaymentSettings={() => setView('paymentSettings')}
           onOpenExport={() => setView('export')}
           onOpenFixedExpenses={() => setView('fixedExpenses')}
+          syncReady={syncReady}
         />
       )}
     </div>

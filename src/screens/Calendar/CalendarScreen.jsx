@@ -28,7 +28,7 @@ function formatDayHeader(dateStr) {
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
 const TYPE_SIGN  = { income: '', expense: '', saving: '' };
 
-function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings, onOpenExport, onOpenFixedExpenses }) {
+function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings, onOpenExport, onOpenFixedExpenses, syncReady }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -48,11 +48,13 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
   const month = activeDate.getMonth() + 1;
 
   const loadTransactions = useCallback(async () => {
-    const generated = await generateFixedExpensesForMonth(year, month);
+    if (syncReady) {
+      const generated = await generateFixedExpensesForMonth(year, month);
+      if (generated > 0) syncNow().catch(console.warn);
+    }
     const data = await getTransactionsByMonth(year, month);
     setTransactions(data);
-    if (generated > 0) syncNow().catch(console.warn);
-  }, [year, month]);
+  }, [year, month, syncReady]);
 
   const loadDay = useCallback(async () => {
     if (!selectedDate) { setDayTransactions([]); return; }
@@ -262,7 +264,7 @@ prevLabel={null}
           }}>
             <img src={bgImage} alt="" style={{ width: '60%', maxWidth: '180px', opacity: 0.5 }} />
           </div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ position: 'relative', zIndex: 1, paddingBottom: '100px' }}>
           {!selectedDate ? (
             <div style={{ textAlign: 'center', color: '#ccc', padding: '24px 0', fontSize: '13px' }}>
               日付を選択してください
