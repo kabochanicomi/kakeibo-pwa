@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { initSync, initFromFirestore, syncNow, initFixedTemplatesFromFirestore } from './utils/sync';
+import { initSync } from './utils/sync';
 import { initPaymentMethods } from './utils/paymentSettings';
-import { clearAllTransactions, deduplicateFixedExpenseTransactions } from './db';
+import { clearAllTransactions } from './db';
 import LoginScreen from './screens/Login/LoginScreen';
 import CalendarScreen from './screens/Calendar/CalendarScreen';
 import ReportScreen from './screens/Report/ReportScreen';
@@ -18,11 +18,9 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [syncReady, setSyncReady] = useState(false);
-  const [view, setView] = useState('calendar'); // 'calendar' | 'report' | 'annualReport' | 'import' | 'paymentSettings' | 'export' | 'fixedExpenses'
+  const [view, setView] = useState('calendar');
 
   useEffect(() => {
-    // 前回ログイン済みなら即カレンダーを表示し、認証・同期はバックグラウンドで行う
     const lastUid = localStorage.getItem('kakeibo_last_uid');
     if (lastUid) {
       initSync(lastUid);
@@ -38,16 +36,6 @@ function App() {
         localStorage.setItem('kakeibo_last_uid', currentUser.uid);
         initSync(currentUser.uid);
         initPaymentMethods(currentUser.uid).catch(console.warn);
-        syncNow().catch(console.warn);
-        Promise.all([
-          initFromFirestore(),
-          initFixedTemplatesFromFirestore(),
-        ]).then(async () => {
-          const removed = await deduplicateFixedExpenseTransactions();
-          if (removed > 0) await syncNow(); // Firestore側の重複も削除
-        }).finally(() => {
-          setSyncReady(true);
-        });
         setUser(currentUser);
       } else {
         localStorage.removeItem('kakeibo_last_uid');
@@ -56,13 +44,7 @@ function App() {
       setLoading(false);
     });
 
-    const handleOnline = () => syncNow().catch(console.warn);
-    window.addEventListener('online', handleOnline);
-
-    return () => {
-      unsubscribe();
-      window.removeEventListener('online', handleOnline);
-    };
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
@@ -93,7 +75,6 @@ function App() {
           onOpenPaymentSettings={() => setView('paymentSettings')}
           onOpenExport={() => setView('export')}
           onOpenFixedExpenses={() => setView('fixedExpenses')}
-          syncReady={syncReady}
         />
       )}
     </div>

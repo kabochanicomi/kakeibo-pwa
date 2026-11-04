@@ -6,7 +6,6 @@ import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { getTransactionsByMonth, getTransactionsByDate } from '../../db';
 import { generateFixedExpensesForMonth } from '../../utils/fixedExpenses';
-import { syncNow } from '../../utils/sync';
 import EntryScreen from '../Entry/EntryScreen';
 
 function toDateStr(d) {
@@ -28,7 +27,7 @@ function formatDayHeader(dateStr) {
 const TYPE_COLOR = { income: '#00c7b7', expense: '#ff758c', saving: '#7b92ff' };
 const TYPE_SIGN  = { income: '', expense: '', saving: '' };
 
-function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings, onOpenExport, onOpenFixedExpenses, syncReady }) {
+function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpenPaymentSettings, onOpenExport, onOpenFixedExpenses }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -48,13 +47,10 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
   const month = activeDate.getMonth() + 1;
 
   const loadTransactions = useCallback(async () => {
-    if (syncReady) {
-      const generated = await generateFixedExpensesForMonth(year, month);
-      if (generated > 0) syncNow().catch(console.warn);
-    }
+    await generateFixedExpensesForMonth(year, month);
     const data = await getTransactionsByMonth(year, month);
     setTransactions(data);
-  }, [year, month, syncReady]);
+  }, [year, month]);
 
   const loadDay = useCallback(async () => {
     if (!selectedDate) { setDayTransactions([]); return; }
@@ -68,10 +64,13 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
   const summary = transactions.reduce(
     (acc, t) => {
       if (t.type === 'income') acc.income += t.amount;
-      else if (t.type === 'expense') acc.expense += t.amount;
+      else if (t.type === 'expense') {
+        acc.expense += t.amount;
+        if (t.expense_type !== 'fixed') acc.expenseNoFixed += t.amount;
+      }
       return acc;
     },
-    { income: 0, expense: 0 }
+    { income: 0, expense: 0, expenseNoFixed: 0 }
   );
 
   const dailyMap = transactions.reduce((acc, t) => {
@@ -187,15 +186,19 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
           padding: '10px 8px', borderBottom: '1px solid #eee',
           backgroundColor: '#fff', flexShrink: 0,
         }}>
-          {[
-            { label: '収入', value: summary.income,  color: '#00c7b7' },
-            { label: '支出', value: summary.expense, color: '#ff758c' },
-          ].map(({ label, value, color }) => (
-            <div key={label} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', color: '#aaa' }}>{label}</div>
-              <div style={{ fontSize: '13px', fontWeight: 'bold', color }}>¥{value.toLocaleString()}</div>
-            </div>
-          ))}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '11px', color: '#aaa' }}>収入</div>
+            <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#00c7b7' }}>¥{summary.income.toLocaleString()}</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '11px', color: '#aaa' }}>支出</div>
+            <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#ff758c' }}>¥{summary.expense.toLocaleString()}</div>
+            {summary.expense > 0 && (
+              <div style={{ fontSize: '10px', color: '#ffaab8', marginTop: '1px' }}>
+                固定除く ¥{summary.expenseNoFixed.toLocaleString()}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Calendar */}

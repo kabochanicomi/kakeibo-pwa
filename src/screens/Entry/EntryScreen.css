@@ -176,6 +176,22 @@
   padding: 6px 20px 10px;
 }
 
+.entry-amount-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: currentColor;
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: entryBlink 1s step-end infinite;
+}
+
+@keyframes entryBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
 .entry-middle {
   flex: 1;
   overflow-y: auto;

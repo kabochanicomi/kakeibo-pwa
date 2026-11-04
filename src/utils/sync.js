@@ -113,6 +113,35 @@ async function _pushUnsyncedTemplates() {
   }
 }
 
+// 機種変時などの手動バックアップ：全データをFirestoreに上書き保存
+export async function fullBackupToFirestore() {
+  if (!_uid) throw new Error('未ログイン');
+  if (!navigator.onLine) throw new Error('オフラインのため実行できません');
+
+  const transactions = await getAllTransactions();
+  for (const record of transactions) {
+    const { id: localId, firestoreId, synced, ...data } = record;
+    const ref = firestoreId ? txDoc(firestoreId) : doc(txCol());
+    if (!firestoreId) await saveTransactionFirestoreId(localId, ref.id);
+    await setDoc(ref, data);
+    await markSynced(localId, ref.id);
+  }
+
+  const templates = await getAllFixedTemplates();
+  for (const template of templates) {
+    const { id: localId, firestoreId, synced, ...data } = template;
+    const col = collection(firestore, 'users', _uid, 'fixed_templates');
+    const ref = firestoreId
+      ? doc(firestore, 'users', _uid, 'fixed_templates', firestoreId)
+      : doc(col);
+    if (!firestoreId) await saveTemplateFirestoreId(localId, ref.id);
+    await setDoc(ref, data);
+    await markFixedTemplateSynced(localId, ref.id);
+  }
+
+  return transactions.length;
+}
+
 async function _processPendingDeletes() {
   const deletes = await getPendingDeletes();
   for (const { id: pendingId, firestoreId } of deletes) {
