@@ -64,10 +64,13 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
   const summary = transactions.reduce(
     (acc, t) => {
       if (t.type === 'income') acc.income += t.amount;
-      else if (t.type === 'expense') acc.expense += t.amount;
+      else if (t.type === 'expense') {
+        acc.expense += t.amount;
+        if (t.expense_type !== 'fixed') acc.expenseNoFixed += t.amount;
+      }
       return acc;
     },
-    { income: 0, expense: 0 }
+    { income: 0, expense: 0, expenseNoFixed: 0 }
   );
 
   const dailyMap = transactions.reduce((acc, t) => {
@@ -183,15 +186,19 @@ function CalendarScreen({ onOpenReport, onOpenAnnualReport, onOpenImport, onOpen
           padding: '10px 8px', borderBottom: '1px solid #eee',
           backgroundColor: '#fff', flexShrink: 0,
         }}>
-          {[
-            { label: '収入', value: summary.income,  color: '#00c7b7' },
-            { label: '支出', value: summary.expense, color: '#ff758c' },
-          ].map(({ label, value, color }) => (
-            <div key={label} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', color: '#aaa' }}>{label}</div>
-              <div style={{ fontSize: '13px', fontWeight: 'bold', color }}>¥{value.toLocaleString()}</div>
-            </div>
-          ))}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '11px', color: '#aaa' }}>収入</div>
+            <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#00c7b7' }}>¥{summary.income.toLocaleString()}</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '11px', color: '#aaa' }}>支出</div>
+            <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#ff758c' }}>¥{summary.expense.toLocaleString()}</div>
+            {summary.expense > 0 && (
+              <div style={{ fontSize: '10px', color: '#ffaab8', marginTop: '1px' }}>
+                固定除く ¥{summary.expenseNoFixed.toLocaleString()}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Calendar */}

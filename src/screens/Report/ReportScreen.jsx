@@ -17,6 +17,7 @@ function ReportScreen({ onBack }) {
   const [activeDate, setActiveDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [openTypes, setOpenTypes] = useState({ fixed: false, variable: true, special: false });
+  const [detailGroup, setDetailGroup] = useState(null); // タップしたgroup_label
 
   const toggleType = (key) => setOpenTypes((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -54,6 +55,12 @@ function ReportScreen({ onBack }) {
     categoryTotals[label] = (categoryTotals[label] || 0) + t.amount;
   });
   const topCategories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+  const detailTransactions = detailGroup
+    ? transactions
+        .filter((t) => t.type === 'expense' && (t.group_label || t.category_label) === detailGroup)
+        .sort((a, b) => a.date.localeCompare(b.date))
+    : [];
 
   return (
     <div className="report-screen">
@@ -128,14 +135,43 @@ function ReportScreen({ onBack }) {
           <div className="report-card-title">支出カテゴリ ランキング TOP5</div>
           {topCategories.length === 0 && <div className="report-empty">データがありません</div>}
           {topCategories.map(([label, amount], i) => (
-            <div className="report-rank-row" key={label}>
+            <div
+              className="report-rank-row"
+              key={label}
+              onClick={() => setDetailGroup(label)}
+            >
               <span className="report-rank-num">{i + 1}</span>
               <span className="report-rank-label">{label}</span>
               <span className="report-rank-amount">{toYen(amount)}</span>
+              <span style={{ color: '#ccc', fontSize: 16 }}>›</span>
             </div>
           ))}
         </div>
       </div>
+
+      {detailGroup && (
+        <div className="report-detail-overlay" onClick={() => setDetailGroup(null)}>
+          <div className="report-detail-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="report-detail-header">
+              <span className="report-detail-title">{detailGroup}</span>
+              <span className="report-detail-total">
+                {toYen(detailTransactions.reduce((s, t) => s + t.amount, 0))}
+              </span>
+              <button className="report-detail-close" onClick={() => setDetailGroup(null)}>✕</button>
+            </div>
+            <div className="report-detail-list">
+              {detailTransactions.map((t) => (
+                <div className="report-detail-item" key={t.id}>
+                  <span className="report-detail-item-date">{t.date.slice(5).replace('-', '/')}</span>
+                  <span className="report-detail-item-name">{t.store_name || t.category_label}</span>
+                  {t.memo ? <span style={{ fontSize: 11, color: '#bbb' }}>{t.memo}</span> : null}
+                  <span className="report-detail-item-amount">{toYen(t.amount)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

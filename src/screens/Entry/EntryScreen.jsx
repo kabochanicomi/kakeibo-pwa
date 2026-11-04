@@ -155,7 +155,7 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
             <div className="entry-scroll-area">
               {/* Amount display */}
               <div className="entry-amount" style={{ color: activeColor }}>
-                ¥{amount.toLocaleString()}
+                ¥{amount.toLocaleString()}<span className="entry-amount-cursor" />
               </div>
 
               {/* Store name input */}
