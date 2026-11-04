@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getAllTransactions } from '../../db';
 import { getPaymentMethods } from '../../utils/paymentSettings';
+import { fullBackupToFirestore, initFromFirestore, initFixedTemplatesFromFirestore } from '../../utils/sync';
 import './ExportScreen.css';
 
 const TYPE_LABEL = { income: '収入', expense: '支出', saving: '貯蓄' };
@@ -67,6 +68,29 @@ function ExportScreen({ onBack }) {
     setStatus(`${transactions.length} 件をエクスポートしました`);
   };
 
+  const handleCloudBackup = async () => {
+    if (!window.confirm('端末内の全データをクラウドにバックアップします。\n既存のクラウドデータは上書きされます。よろしいですか？')) return;
+    setStatus('バックアップ中...');
+    try {
+      const count = await fullBackupToFirestore();
+      setStatus(`✅ ${count} 件をクラウドにバックアップしました`);
+    } catch (e) {
+      setStatus(`❌ バックアップ失敗：${e.message}`);
+    }
+  };
+
+  const handleCloudRestore = async () => {
+    if (!window.confirm('クラウドのデータを端末に復元します。\n（既存の端末データはそのままで、クラウドにしかないデータが追加されます）')) return;
+    setStatus('復元中...');
+    try {
+      await initFromFirestore();
+      await initFixedTemplatesFromFirestore();
+      setStatus('✅ クラウドからの復元が完了しました');
+    } catch (e) {
+      setStatus(`❌ 復元失敗：${e.message}`);
+    }
+  };
+
   const exportPaymentMethods = () => {
     const methods = getPaymentMethods();
     downloadFile(
@@ -99,6 +123,23 @@ function ExportScreen({ onBack }) {
             <div>
               <div className="ex-btn-title">JSON でダウンロード</div>
               <div className="ex-btn-desc">バックアップ用の完全データ</div>
+            </div>
+          </button>
+        </div>
+        <div className="ex-section">
+          <div className="ex-section-label">クラウド（機種変・バックアップ用）</div>
+          <button className="ex-btn" onClick={handleCloudBackup}>
+            <span className="ex-btn-icon">☁️</span>
+            <div>
+              <div className="ex-btn-title">クラウドにバックアップ</div>
+              <div className="ex-btn-desc">全データをFirestoreに保存する</div>
+            </div>
+          </button>
+          <button className="ex-btn" onClick={handleCloudRestore}>
+            <span className="ex-btn-icon">📲</span>
+            <div>
+              <div className="ex-btn-title">クラウドから復元</div>
+              <div className="ex-btn-desc">新しい端末へのデータ移行時に使用</div>
             </div>
           </button>
         </div>

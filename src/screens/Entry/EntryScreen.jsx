@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { addTransaction, updateTransaction, deleteTransaction, getTransactionsByDate } from '../../db';
-import { syncNow } from '../../utils/sync';
 import { getPaymentMethods } from '../../utils/paymentSettings';
 import { CATEGORIES } from '../../constants/categories';
 
@@ -70,7 +69,6 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
     await deleteTransaction(id);
     onSaved();
     onClose();
-    syncNow().catch(console.warn);
   };
 
   const handleSaveWithCat = async (cat) => {
@@ -93,7 +91,6 @@ function EntryScreen({ date, onClose, onSaved, editTransaction }) {
     }
     onSaved();
     onClose();
-    syncNow().catch(console.warn);
   };
 
   const handlePaymentSelect = (id) => {

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getAllFixedTemplates, addFixedTemplate, updateFixedTemplate, deleteFixedTemplate } from '../../db';
-import { syncNow } from '../../utils/sync';
 import { CATEGORIES, PAYMENT_METHODS } from '../../constants/categories';
 import './FixedExpensesScreen.css';
 
@@ -264,7 +263,6 @@ function FixedExpensesScreen({ onBack }) {
       } else {
         await updateFixedTemplate(formTarget.id, formData);
       }
-      await syncNow().catch(console.warn);
       await load();
       setFormTarget(null);
     } finally {
